@@ -1,0 +1,21 @@
+name: Build LocoResiduo APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['App.js','app.json','package.json','eas.json','.github/workflows/build-android.yml']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: npm install --global eas-cli
+      - name: Build APK with EAS
+        run: eas build --platform android --profile preview --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
