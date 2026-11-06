@@ -1,0 +1,6 @@
+{
+  "expo":{"name":"LocoResiduo","slug":"locoresiduo","version":"1.0.0","orientation":"portrait","userInterfaceStyle":"dark","newArchEnabled":true,
+    "android":{"package":"com.locoresiduo.app","permissions":["ACCESS_FINE_LOCATION","ACCESS_COARSE_LOCATION","VIBRATE"]},
+    "ios":{"bundleIdentifier":"com.locoresiduo.app","infoPlist":{"NSLocationWhenInUseUsageDescription":"LocoResiduo utiliza la ubicación para calcular la distancia recorrida.","NSLocationAlwaysAndWhenInUseUsageDescription":"LocoResiduo utiliza la ubicación durante el cálculo del residuo."}},
+    "plugins":["expo-location"]}
+}
