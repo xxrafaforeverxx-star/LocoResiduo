@@ -14,8 +14,35 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Instalar túnel de Expo
         run: npm install --no-save --no-audit --no-fund @expo/ngrok
-      - name: Abrir enlace temporal para Expo Go
-        run: npx expo start --go --tunnel --non-interactive --clear
+      - name: Publicar enlace para iPhone
+        shell: bash
         env:
           CI: '1'
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          set -u
+          echo "## LocoResiduo en iPhone" >> "$GITHUB_STEP_SUMMARY"
+          echo "Preparando enlace temporal..." >> "$GITHUB_STEP_SUMMARY"
+          (npx expo start --go --tunnel --non-interactive --clear > expo-go.log 2>&1) &
+          PID=$!
+          URL=""
+          for i in $(seq 1 90); do
+            URL=$(grep -oE 'exp://[^[:space:]"<>]+' expo-go.log | head -1 || true)
+            if [ -n "$URL" ]; then break; fi
+            if ! kill -0 "$PID" 2>/dev/null; then
+              cat expo-go.log
+              exit 1
+            fi
+            sleep 2
+          done
+          if [ -z "$URL" ]; then
+            cat expo-go.log
+            echo "No se ha generado un enlace de Expo Go." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### [Abrir LocoResiduo en Expo Go]($URL)" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "En iPhone, pulsa el enlace mientras esta ejecución siga activa." >> "$GITHUB_STEP_SUMMARY"
+          echo "Enlace temporal: $URL"
+          wait "$PID"
