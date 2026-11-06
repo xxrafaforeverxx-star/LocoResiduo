@@ -1,0 +1,21 @@
+name: Probar LocoResiduo en Expo Go
+on:
+  workflow_dispatch:
+jobs:
+  expo-go:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Instalar túnel de Expo
+        run: npm install --no-save --no-audit --no-fund @expo/ngrok
+      - name: Abrir enlace temporal para Expo Go
+        run: npx expo start --go --tunnel --non-interactive --clear
+        env:
+          CI: '1'
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
