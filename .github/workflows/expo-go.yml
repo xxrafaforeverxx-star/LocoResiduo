@@ -1,48 +1,87 @@
+
 name: Probar LocoResiduo en Expo Go
+
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   expo-go:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Descargar proyecto
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
+
       - name: Instalar dependencias
-        run: npm install --no-audit --no-fund
-      - name: Instalar túnel de Expo
-        run: npm install --no-save --no-audit --no-fund @expo/ngrok
+        run: npm install
+
+      - name: Instalar tunel de Expo
+        run: npm install --no-save @expo/ngrok
+
       - name: Publicar enlace para iPhone
-        shell: bash
         env:
-          CI: '1'
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          CI: '1'
+        shell: bash
         run: |
-          set -u
+          set -euo pipefail
+
+          npx expo start --go --tunnel --clear > expo-go.log 2>&1 &
+          PID=$!
+
           echo "## LocoResiduo en iPhone" >> "$GITHUB_STEP_SUMMARY"
           echo "Preparando enlace temporal..." >> "$GITHUB_STEP_SUMMARY"
-          (npx expo start --go --tunnel --non-interactive --clear > expo-go.log 2>&1) &
-          PID=$!
+
           URL=""
+
           for i in $(seq 1 90); do
-            URL=$(grep -oE 'exp://[^[:space:]"<>]+' expo-go.log | head -1 || true)
-            if [ -n "$URL" ]; then break; fi
+            if curl -fsS --max-time 3 \
+              http://127.0.0.1:8081/status 2>/dev/null \
+              | grep -q "packager-status:running"; then
+
+              HOST=$(curl -fsS --max-time 3 \
+                http://127.0.0.1:8081 \
+                -H "Accept: application/expo+json" \
+                2>/dev/null \
+                | grep -oE '[a-zA-Z0-9.-]+\.exp\.direct' \
+                | head -1 || true)
+
+              if [ -n "$HOST" ]; then
+                URL="exp://$HOST"
+                break
+              fi
+            fi
+
             if ! kill -0 "$PID" 2>/dev/null; then
               cat expo-go.log
               exit 1
             fi
+
             sleep 2
           done
+
           if [ -z "$URL" ]; then
+            echo "No se pudo obtener el enlace."
             cat expo-go.log
-            echo "No se ha generado un enlace de Expo Go." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### [Abrir LocoResiduo en Expo Go]($URL)" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "En iPhone, pulsa el enlace mientras esta ejecución siga activa." >> "$GITHUB_STEP_SUMMARY"
-          echo "Enlace temporal: $URL"
+          echo "Enlace temporal: $URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Abre el enlace desde tu iPhone mientras esta ejecucion siga activa." >> "$GITHUB_STEP_SUMMARY"
+
+          echo "Enlace generado: $URL"
+
           wait "$PID"
