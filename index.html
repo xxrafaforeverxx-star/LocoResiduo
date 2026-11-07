@@ -194,7 +194,7 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 <div class="settingsOption"><div><strong>Anunciar velocidad por voz</strong><p>Lee la velocidad seleccionada en los botones.</p></div><label class="settingsSwitch"><input id="voiceToggle" type="checkbox" aria-label="Activar voz"><span></span></label></div>
 <div class="settingsOption"><div><strong>Vibración al completar</strong><p>Solo funciona si el navegador y el dispositivo admiten vibración web.</p></div><label class="settingsSwitch"><input id="vibrateToggle" type="checkbox" aria-label="Activar vibración"><span></span></label></div>
 <div class="settingsStatus" id="vibrateStatus" role="status"></div>
-<button type="button" id="testSound" class="settingsTest">Probar sonido de confirmación</button>
+
 <div class="settingsFooter">Railway Pro · Configuración guardada en este dispositivo</div></section></div>
 <script>
 "use strict";
@@ -267,7 +267,7 @@ $('wakeToggle').addEventListener('change',()=>{appSettings.keepAwake=$('wakeTogg
 function saveAppSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(appSettings));}catch(e){}}
 for(const [id,key] of [['soundToggle','sounds'],['voiceToggle','voice'],['vibrateToggle','vibration']]){$(id).checked=appSettings[key];$(id).addEventListener('change',()=>{appSettings[key]=$(id).checked;saveAppSettings();if(key==='voice'&&!appSettings.voice&&'speechSynthesis'in window)speechSynthesis.cancel();});}
 $('vibrateStatus').textContent=('vibrate'in navigator)?'Vibración disponible según el navegador.':'Vibración web no disponible en este iPhone/navegador.';
-$('testSound').addEventListener('click',()=>{if(!appSettings.sounds){$('vibrateStatus').textContent='Activa los sonidos para escuchar la prueba.';return;}confirmStart();});
+
 document.addEventListener('visibilitychange',syncWake);
 if(appSettings.keepAwake)syncWake();else wakeMessage('Pantalla activa desactivada.');
 
