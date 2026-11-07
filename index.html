@@ -69,15 +69,52 @@ h1 span{color:#e34d55}
 button,input,select{-webkit-tap-highlight-color:transparent}
 button:active{filter:brightness(1.15)}
 @media(max-height:760px){.card{padding-top:5px;padding-bottom:5px}.speed{height:39px}.train{font-size:36px;min-height:36px}.driveTimer{padding:4px 8px}}
+
+/* Railway Pro 2.0 — diseño plano y tipografía de instrumento */
+:root{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}
+body{background:#090d12}
+main{padding-left:14px;padding-right:14px}
+header{padding:3px 0 9px;border-bottom:1px solid #34404a}
+.logo{width:36px;height:36px;background:#11171d;border-color:#26333e;border-radius:6px}
+h1{font-family:"Arial Narrow","DIN Condensed",system-ui,sans-serif;font-weight:850;letter-spacing:-1.25px}
+.card{background:#141a21;border:1px solid #34404a;border-radius:7px;box-shadow:none}
+.card:first-of-type{border-left:3px solid #cf414b}
+.label,.between .label{font-size:10px;font-weight:700;letter-spacing:1.15px;color:#a5b1bc}
+.train{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:clamp(33px,9.5vw,47px);min-height:37px;color:#f05a62;font-weight:750}
+.train::placeholder{font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:16px;font-weight:450;color:#667684}
+.metric,.length,.unit{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-weight:700;letter-spacing:-1px}
+.metric{font-size:clamp(22px,6vw,29px)}
+.redtext{color:#f05a62}
+.section{font-size:11px;letter-spacing:1.4px;color:#c2cbd3;margin:10px 0 6px}
+.section:before,.section:after{background:#35414c}
+.hint{font-size:9px}
+.speed{background:#1c252e;border:1px solid #3b4a57;border-radius:5px;box-shadow:none;font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:clamp(19px,5.4vw,25px);font-weight:700;height:clamp(40px,10vw,45px)}
+.speed.active{background:#b93843;border-color:#e05e67;box-shadow:none}
+.action{background:#202a34;border:1px solid #3d4d5a;border-radius:5px;box-shadow:none}
+#gpsResiduo{background:#142820;border-color:#367256;border-radius:5px;color:#82dcaa}
+.gpsButtonMark{font-size:17px;vertical-align:-1px;margin-right:5px}
+.action.danger{background:#3c2027;border-color:#78424a}
+#gpsBadge{border-radius:5px;background:#111b21}
+.driveTimer{background:#121a23;border:1px solid #394b5b;border-radius:7px;box-shadow:0 -8px 25px #000c}
+.driveDigits{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-weight:650;font-size:clamp(24px,7vw,31px);letter-spacing:.2px}
+.driveMark{font-size:17px;color:#b0beca;vertical-align:-1px}
+.driveControls button{border-radius:5px;background:#253341}
+.driveControls button:last-child{background:#42252d}
+.safetyDetails{margin:7px 2px 0;color:#778796;text-align:center;font-size:9px}
+.safetyDetails summary{cursor:pointer;list-style:none;text-decoration:underline;text-underline-offset:2px}
+.safetyDetails summary::-webkit-details-marker{display:none}
+.safetyDetails .note{font-size:10px;text-align:left;line-height:1.45;margin:7px 0}
+.done{border-radius:6px}
+@media(max-height:760px){.speed{height:39px}.card{padding-top:5px;padding-bottom:5px}.train{font-size:35px}}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
 <div class="row"><div class="card"><div class="label">RECORRIDO</div><div class="metric" id="travelled">0 m</div></div><div class="card"><div class="label">RESTANTE</div><div class="metric redtext" id="remaining">0 m</div></div></div>
 <div class="card"><div class="between"><span class="label">PRECISIÓN GPS</span><span class="good" id="accuracy">--</span></div><div class="track"><div class="fill" id="progress"></div></div><div class="status" id="gpsStatus">GPS pendiente · esperando permiso</div></div>
-<div class="section">SELECCIONAR VELOCIDAD</div><div class="hint">Velocidades: cálculo −3 km/h · RESIDUO GPS: medición</div><div class="grid" id="speeds"></div><div class="voice" id="voice"></div>
-<div class="actions"><button class="action" id="gpsResiduo">RESIDUO GPS</button></div><div class="actions"><button class="action" id="pause" disabled>Pausar</button><button class="action danger" id="reset">Nuevo residuo</button></div>
+<div class="section">VELOCIDAD DE REFERENCIA</div><div class="hint">Velocidades: cálculo −3 km/h · RESIDUO GPS: medición</div><div class="grid" id="speeds"></div><div class="voice" id="voice"></div>
+<div class="actions"><button class="action" id="gpsResiduo"><span class="gpsButtonMark" aria-hidden="true">◎</span> RESIDUO GPS</button></div><div class="actions"><button class="action" id="pause" disabled>Pausar</button><button class="action danger" id="reset">Nuevo residuo</button></div>
 <div class="done" id="done">✓ RESIDUO COMPLETADO <span class="doneBeep">PI · PI · PI</span><div class="completeInfo">Distancia calculada alcanzada · verificar siempre por medios reglamentarios.</div></div>
-<section class="driveTimer" id="driveTimer"><div class="driveHead"><span>TIEMPO DE CONDUCCIÓN</span><label>Aviso <select id="driveLimit"><option value="300">5 h</option><option value="315">5 h 15 min</option><option value="330">5 h 30 min</option></select></label></div><div class="driveDigits" id="driveDigits">00:00:00</div><div class="driveControls"><button id="driveStart">Iniciar</button><button id="driveReset">Reiniciar</button></div><div class="driveInfo" id="driveInfo">Cronómetro ascendente · referencia 6 h · alarma solo con app activa</div></section><div class="trainArt">🚄 ━━━━━━━━━</div><p class="note">PROTOTIPO DE PRUEBA · El GPS puede omitir distancia real o acumular errores. No usar durante la conducción. Las distancias GPS y las estimaciones pueden ser inexactas. No sustituye sistemas embarcados ni procedimientos ferroviarios. Safari puede detener GPS y audio en segundo plano.</p>
+<section class="driveTimer" id="driveTimer"><div class="driveHead"><span><span class="driveMark" aria-hidden="true">◷</span> TIEMPO DE CONDUCCIÓN</span><label>Aviso <select id="driveLimit"><option value="300">5 h</option><option value="315">5 h 15 min</option><option value="330">5 h 30 min</option></select></label></div><div class="driveDigits" id="driveDigits">00:00:00</div><div class="driveControls"><button id="driveStart">Iniciar</button><button id="driveReset">Reiniciar</button></div><div class="driveInfo" id="driveInfo">Cronómetro ascendente · referencia 6 h · alarma solo con app activa</div></section><div class="trainArt">🚄 ━━━━━━━━━</div><details class="safetyDetails"><summary>Información de seguridad · herramienta auxiliar</summary><p class="note">PROTOTIPO DE PRUEBA · El GPS puede omitir distancia real o acumular errores. No usar durante la conducción. Las distancias GPS y las estimaciones pueden ser inexactas. No sustituye sistemas embarcados ni procedimientos ferroviarios. Safari puede detener GPS y audio en segundo plano.</p></details>
 </main>
 <script>
 "use strict";
