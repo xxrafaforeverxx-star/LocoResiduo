@@ -144,14 +144,23 @@ main > .row > .card,main > .row > .card:first-child,main > .row > .card:first-of
 #done .completeInfo{font-size:9px;line-height:1.15;margin:4px 0 0;padding:0;border:0;color:#b0c7b8;background:transparent}
 @media(max-height:760px){#done{bottom:calc(env(safe-area-inset-bottom) + 113px);padding:5px 9px}#done .doneRail{height:20px}#done .doneTrain{height:19px;width:23px}}
 @media(prefers-reduced-motion:reduce){#done .doneTrain{animation:none;left:calc(50% - 14px)}}
+
+/* El aviso ocupa su propia fila, nunca se superpone a los controles */
+#done{position:relative;z-index:auto;left:auto;bottom:auto;transform:none;width:100%;margin:6px 0 5px;padding:6px 10px 5px;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;background:#10241b}
+#done .doneTop{gap:7px}
+#done .doneRail{height:17px;margin-top:1px}
+#done .doneTrain{width:22px;height:16px}
+#done .completeInfo{margin-top:2px;font-size:9px}
+main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+@media(max-height:760px){#done{bottom:auto;padding:5px 8px}#done .doneRail{height:15px}#done .doneTrain{height:14px}}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
 <div class="row"><div class="card"><div class="label">RECORRIDO</div><div class="metric" id="travelled">0 m</div></div><div class="card"><div class="label">RESTANTE</div><div class="metric redtext" id="remaining">0 m</div></div></div>
 <div class="card"><div class="between"><span class="label">PRECISIÓN GPS</span><span class="good" id="accuracy">--</span></div><div class="track"><div class="fill" id="progress"></div></div><div class="status" id="gpsStatus">GPS pendiente · esperando permiso</div></div>
-<div class="section">VELOCIDAD DE REFERENCIA</div><div class="hint">Velocidades: cálculo −3 km/h · RESIDUO GPS: medición</div><div class="grid" id="speeds"></div><div class="voice" id="voice"></div>
+<div class="section">VELOCIDAD DE REFERENCIA</div><div class="hint">Velocidades: cálculo −3 km/h · RESIDUO GPS: medición</div><div class="grid" id="speeds"></div><div class="voice" id="voice"></div><div class="done" id="done" role="status" aria-live="polite"><div class="doneTop"><span class="doneIcon" aria-hidden="true">✓</span><span class="doneTitle">RESIDUO COMPLETADO</span></div><div class="doneRail" aria-hidden="true"><img class="doneTrain" src="./icon.svg" alt=""></div><div class="completeInfo">Distancia calculada alcanzada · Verificar por medios reglamentarios.</div></div>
 <div class="actions"><button class="action" id="gpsResiduo"><span class="gpsButtonMark" aria-hidden="true">◎</span> RESIDUO GPS</button></div><div class="actions"><button class="action" id="pause" disabled>Pausar</button><button class="action danger" id="reset">Nuevo residuo</button></div>
-<div class="done" id="done" role="status" aria-live="polite"><div class="doneTop"><span class="doneIcon" aria-hidden="true">✓</span><span class="doneTitle">RESIDUO COMPLETADO</span></div><div class="doneRail" aria-hidden="true"><img class="doneTrain" src="./icon.svg" alt=""></div><div class="completeInfo">Distancia calculada alcanzada · Verificar por medios reglamentarios.</div></div>
+
 <section class="driveTimer" id="driveTimer"><div class="driveHead"><span><span class="driveMark" aria-hidden="true">◷</span> TIEMPO DE CONDUCCIÓN</span><label>Aviso <select id="driveLimit"><option value="300">5 h</option><option value="315">5 h 15 min</option><option value="330">5 h 30 min</option></select></label></div><div class="driveDigits" id="driveDigits">00:00:00</div><div class="driveControls"><button id="driveStart">Iniciar</button><button id="driveReset">Reiniciar</button></div><div class="driveInfo" id="driveInfo">Cronómetro ascendente · referencia 6 h · alarma solo con app activa</div></section><div class="trainArt">🚄 ━━━━━━━━━</div><details class="safetyDetails"><summary>Información de seguridad · herramienta auxiliar</summary><p class="note">PROTOTIPO DE PRUEBA · El GPS puede omitir distancia real o acumular errores. No usar durante la conducción. Las distancias GPS y las estimaciones pueden ser inexactas. No sustituye sistemas embarcados ni procedimientos ferroviarios. Safari puede detener GPS y audio en segundo plano.</p></details>
 </main>
 <script>
