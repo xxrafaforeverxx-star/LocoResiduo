@@ -175,6 +175,11 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 .settingsOption{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid #344451;border-radius:8px;padding:13px 10px}.settingsOption strong{font-size:13px}.settingsOption p{color:#9aabb9;font-size:11px;line-height:1.4;margin:5px 0 0}
 .settingsSwitch{position:relative;flex:none;width:45px;height:27px}.settingsSwitch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;z-index:1}.settingsSwitch span{display:block;background:#3a4753;border-radius:30px;width:45px;height:27px;transition:background .2s}.settingsSwitch span:after{content:"";display:block;position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#eaf0f4;transition:transform .2s}.settingsSwitch input:checked+span{background:#388d66}.settingsSwitch input:checked+span:after{transform:translateX(18px)}.settingsSwitch input:focus-visible+span{outline:2px solid #8fc9ff}
 .settingsStatus{color:#8ee0b4;font-size:11px;margin:10px 2px}.settingsHelp{color:#98a8b5;font-size:11px;line-height:1.45;margin:15px 2px}.settingsFooter{border-top:1px solid #344451;padding-top:10px;color:#708493;font-size:10px}
+
+.settingsSectionTitle{font-size:10px;letter-spacing:1.5px;font-weight:800;color:#9eafbd;margin:17px 2px 9px}
+.settingsSectionTitle~.settingsOption{margin-top:7px}
+.settingsTest{width:100%;padding:10px 12px;margin:10px 0 13px;background:#233341;border:1px solid #526577;border-radius:7px;color:#e7f1f6;font-weight:750;font-size:12px}
+.settingsStatus{line-height:1.4}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
@@ -184,7 +189,13 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 <div class="actions"><button class="action" id="gpsResiduo"><span class="gpsButtonMark" aria-hidden="true">◎</span> RESIDUO GPS</button></div><div class="actions"><button class="action" id="pause" disabled>Pausar</button><button class="action danger" id="reset">Nuevo residuo</button></div>
 
 <section class="driveTimer" id="driveTimer"><div class="driveHead"><span><span class="driveMark" aria-hidden="true">◷</span> TIEMPO DE CONDUCCIÓN</span><label>Aviso <select id="driveLimit"><option value="300">5 h</option><option value="315">5 h 15 min</option><option value="330">5 h 30 min</option></select></label></div><div class="driveDigits" id="driveDigits">00:00:00</div><div class="driveControls"><button id="driveStart">Iniciar</button><button id="driveReset">Reiniciar</button></div><div class="driveInfo" id="driveInfo">Cronómetro ascendente · referencia 6 h · alarma solo con app activa</div></section><div class="trainArt">🚄 ━━━━━━━━━</div><details class="safetyDetails"><summary>Información de seguridad · herramienta auxiliar</summary><p class="note">PROTOTIPO DE PRUEBA · El GPS puede omitir distancia real o acumular errores. No usar durante la conducción. Las distancias GPS y las estimaciones pueden ser inexactas. No sustituye sistemas embarcados ni procedimientos ferroviarios. Safari puede detener GPS y audio en segundo plano.</p></details>
-</main><div class="settingsOverlay" id="settingsOverlay" hidden><section class="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="settingsHead"><div><div class="settingsKicker">LOCORESIDUO</div><h2 id="settingsTitle">AJUSTES</h2></div><button id="settingsClose" type="button" aria-label="Cerrar ajustes">✕</button></div><div class="settingsOption"><div><strong>Mantener pantalla activa</strong><p>Intenta impedir el bloqueo automático mientras LocoResiduo está abierto.</p></div><label class="settingsSwitch"><input id="wakeToggle" type="checkbox" aria-label="Mantener pantalla activa"><span></span></label></div><div class="settingsStatus" id="wakeStatus" role="status">Comprobando compatibilidad…</div><p class="settingsHelp">En iPhone esta función depende de Safari y de iOS. Puede no estar disponible o detenerse al cambiar de aplicación, bloquear el teléfono o activar ahorro de batería.</p><div class="settingsFooter">Railway Pro · Configuración guardada en este dispositivo</div></section></div>
+</main><div class="settingsOverlay" id="settingsOverlay" hidden><section class="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="settingsHead"><div><div class="settingsKicker">LOCORESIDUO</div><h2 id="settingsTitle">AJUSTES</h2></div><button id="settingsClose" type="button" aria-label="Cerrar ajustes">✕</button></div><div class="settingsOption"><div><strong>Mantener pantalla activa</strong><p>Intenta impedir el bloqueo automático mientras LocoResiduo está abierto.</p></div><label class="settingsSwitch"><input id="wakeToggle" type="checkbox" aria-label="Mantener pantalla activa"><span></span></label></div><div class="settingsStatus" id="wakeStatus" role="status">Comprobando compatibilidad…</div><p class="settingsHelp">En iPhone esta función depende de Safari y de iOS. Puede no estar disponible o detenerse al cambiar de aplicación, bloquear el teléfono o activar ahorro de batería.</p><div class="settingsSectionTitle">SONIDOS Y VIBRACIÓN</div>
+<div class="settingsOption"><div><strong>Sonidos de la aplicación</strong><p>Pitido de inicio, tres avisos de residuo y alarma de conducción.</p></div><label class="settingsSwitch"><input id="soundToggle" type="checkbox" aria-label="Activar sonidos"><span></span></label></div>
+<div class="settingsOption"><div><strong>Anunciar velocidad por voz</strong><p>Lee la velocidad seleccionada en los botones.</p></div><label class="settingsSwitch"><input id="voiceToggle" type="checkbox" aria-label="Activar voz"><span></span></label></div>
+<div class="settingsOption"><div><strong>Vibración al completar</strong><p>Solo funciona si el navegador y el dispositivo admiten vibración web.</p></div><label class="settingsSwitch"><input id="vibrateToggle" type="checkbox" aria-label="Activar vibración"><span></span></label></div>
+<div class="settingsStatus" id="vibrateStatus" role="status"></div>
+<button type="button" id="testSound" class="settingsTest">Probar sonido de confirmación</button>
+<div class="settingsFooter">Railway Pro · Configuración guardada en este dispositivo</div></section></div>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -192,16 +203,16 @@ const state={mode:'manual',speed:0,travelled:0,running:false,paused:false,comple
 const target=()=>Math.max(0,Number($('length').value.replace(',','.'))||0);
 const fmt=n=>Math.max(0,Math.round(n)).toLocaleString('es-ES');
 function update(){const t=target();$('travelled').textContent=fmt(state.travelled)+' m';$('remaining').textContent=fmt(Math.max(0,t-state.travelled))+' m';$('progress').style.width=(t?Math.min(100,state.travelled/t*100):0)+'%';$('remaining').style.color=t&&state.travelled>=t?'#4ade80':'#ef4444';}
-function speak(message){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.lang='es-ES';speechSynthesis.speak(u);}catch(e){}}
+function speak(message){if(typeof appSettings!=='undefined'&&!appSettings.voice)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.lang='es-ES';speechSynthesis.speak(u);}catch(e){}}
 function makeAlarm(){const sampleRate=22050,duration=1.28,n=Math.floor(sampleRate*duration),samples=new Int16Array(n);for(let i=0;i<n;i++){const t=i/sampleRate,segment=Math.floor(t/.4),local=t-segment*.4;if(segment<3&&local<.23){const env=Math.min(1,local/.012,Math.max(0,(.23-local)/.025));samples[i]=Math.round(14000*env*Math.sin(2*Math.PI*880*t));}}const buffer=new ArrayBuffer(44+n*2),view=new DataView(buffer);const str=(off,v)=>{for(let i=0;i<v.length;i++)view.setUint8(off+i,v.charCodeAt(i));};str(0,'RIFF');view.setUint32(4,36+n*2,true);str(8,'WAVE');str(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);str(36,'data');view.setUint32(40,n*2,true);for(let i=0;i<n;i++)view.setInt16(44+i*2,samples[i],true);return URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));}
 const alarm=new Audio(makeAlarm());alarm.preload='auto';alarm.setAttribute('playsinline','');let alarmUnlocked=false;
-function tone(){try{alarm.pause();alarm.currentTime=0;const p=alarm.play();if(p)p.catch(()=>{speak('Residuo completado');$('voice').textContent='Aviso por voz: residuo completado';});}catch(e){speak('Residuo completado');}}
+function tone(){if(!appSettings.sounds)return;try{alarm.pause();alarm.currentTime=0;const p=alarm.play();if(p)p.catch(()=>{speak('Residuo completado');$('voice').textContent='Aviso por voz: residuo completado';});}catch(e){speak('Residuo completado');}}
 function unlockAlarm(){if(alarmUnlocked)return;alarmUnlocked=true;try{alarm.muted=true;alarm.currentTime=0;const p=alarm.play();if(p)p.then(()=>{alarm.pause();alarm.currentTime=0;alarm.muted=false;}).catch(()=>{alarm.muted=false;});else alarm.muted=false;}catch(e){alarm.muted=false;}}
 // Sonido breve de confirmación, independiente de los tres pitidos finales.
 function makeStartSound(){const rate=22050,n=Math.floor(rate*.17),buffer=new ArrayBuffer(44+n*2),v=new DataView(buffer);const str=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i));};str(0,'RIFF');v.setUint32(4,36+n*2,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,n*2,true);for(let i=0;i<n;i++){const t=i/rate,env=Math.min(1,t/.012,(.17-t)/.025);v.setInt16(44+i*2,Math.round(13000*Math.max(0,env)*Math.sin(2*Math.PI*1100*t)),true);}return URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));}
 const startSound=new Audio(makeStartSound());startSound.preload='auto';startSound.setAttribute('playsinline','');
-function confirmStart(){try{startSound.pause();startSound.currentTime=0;const p=startSound.play();if(p)p.catch(()=>{});}catch(e){}}
-function finish(){if(state.complete)return;state.complete=true;state.running=false;stopGPS();$('done').style.display='block';$('voice').textContent='Distancia calculada alcanzada';tone();if(navigator.vibrate)navigator.vibrate([200,120,200,120,200]);$('pause').disabled=true;}
+function confirmStart(){if(!appSettings.sounds)return;try{startSound.pause();startSound.currentTime=0;const p=startSound.play();if(p)p.catch(()=>{});}catch(e){}}
+function finish(){if(state.complete)return;state.complete=true;state.running=false;stopGPS();$('done').style.display='block';$('voice').textContent='Distancia calculada alcanzada';tone();if(appSettings.vibration&&navigator.vibrate)navigator.vibrate([200,120,200,120,200]);$('pause').disabled=true;}
 function addDistance(m){if(!state.running||state.paused||state.complete)return;state.travelled=Math.min(target(),state.travelled+Math.max(0,m));update();if(target()>0&&state.travelled>=target())finish();}
 function meters(a,b){const R=6371000,toRad=v=>v*Math.PI/180,dlat=toRad(b.latitude-a.latitude),dlon=toRad(b.longitude-a.longitude),x=Math.sin(dlat/2)**2+Math.cos(toRad(a.latitude))*Math.cos(toRad(b.latitude))*Math.sin(dlon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
 function stopGPS(){if(state.watch!==null&&navigator.geolocation){navigator.geolocation.clearWatch(state.watch);state.watch=null;}state.lastGPS=null;}
@@ -231,8 +242,8 @@ setInterval(renderDrive,1000);document.addEventListener('visibilitychange',()=>{
 
 /* Ajustes persistentes y Wake Lock opcional (sin alterar contadores) */
 const SETTINGS_KEY='locoresiduo-settings-v1';
-let appSettings={keepAwake:false};
-try{const stored=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');appSettings.keepAwake=stored.keepAwake===true;}catch(e){}
+let appSettings={keepAwake:false,sounds:true,voice:true,vibration:true};
+try{const stored=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');appSettings.keepAwake=stored.keepAwake===true;appSettings.sounds=stored.sounds!==false;appSettings.voice=stored.voice!==false;appSettings.vibration=stored.vibration!==false;}catch(e){}
 let wakeSentinel=null;
 const wakeSupported='wakeLock' in navigator&&typeof navigator.wakeLock.request==='function';
 function wakeMessage(message){$('wakeStatus').textContent=message;}
@@ -244,7 +255,7 @@ async function syncWake(){
   try{const sentinel=await navigator.wakeLock.request('screen');if(!appSettings.keepAwake||document.hidden){await sentinel.release();return;}wakeSentinel=sentinel;sentinel.addEventListener('release',()=>{if(wakeSentinel===sentinel){wakeSentinel=null;wakeMessage('Bloqueo de pantalla liberado por iOS o el navegador.');}});wakeMessage('Pantalla activa mientras la aplicación esté visible.');}
   catch(e){wakeMessage('No se ha podido activar: iOS puede limitar esta función.');}
 }
-function openSettings(){$('settingsOverlay').hidden=false;$('wakeToggle').checked=appSettings.keepAwake;$('settingsClose').focus();syncWake();}
+function openSettings(){$('settingsOverlay').hidden=false;$('wakeToggle').checked=appSettings.keepAwake;$('soundToggle').checked=appSettings.sounds;$('voiceToggle').checked=appSettings.voice;$('vibrateToggle').checked=appSettings.vibration;$('settingsClose').focus();syncWake();}
 function closeSettings(){$('settingsOverlay').hidden=true;$('settingsOpen').focus();}
 $('settingsOpen').addEventListener('click',openSettings);
 $('settingsClose').addEventListener('click',closeSettings);
@@ -252,6 +263,11 @@ $('settingsOverlay').addEventListener('click',event=>{if(event.target===$('setti
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('settingsOverlay').hidden)closeSettings();});
 $('wakeToggle').checked=appSettings.keepAwake;
 $('wakeToggle').addEventListener('change',()=>{appSettings.keepAwake=$('wakeToggle').checked;try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(appSettings));}catch(e){}syncWake();});
+
+function saveAppSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(appSettings));}catch(e){}}
+for(const [id,key] of [['soundToggle','sounds'],['voiceToggle','voice'],['vibrateToggle','vibration']]){$(id).checked=appSettings[key];$(id).addEventListener('change',()=>{appSettings[key]=$(id).checked;saveAppSettings();if(key==='voice'&&!appSettings.voice&&'speechSynthesis'in window)speechSynthesis.cancel();});}
+$('vibrateStatus').textContent=('vibrate'in navigator)?'Vibración disponible según el navegador.':'Vibración web no disponible en este iPhone/navegador.';
+$('testSound').addEventListener('click',()=>{if(!appSettings.sounds){$('vibrateStatus').textContent='Activa los sonidos para escuchar la prueba.';return;}confirmStart();});
 document.addEventListener('visibilitychange',syncWake);
 if(appSettings.keepAwake)syncWake();else wakeMessage('Pantalla activa desactivada.');
 
