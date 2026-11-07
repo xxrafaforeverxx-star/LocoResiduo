@@ -106,6 +106,20 @@ h1{font-family:"Arial Narrow","DIN Condensed",system-ui,sans-serif;font-weight:8
 .safetyDetails .note{font-size:10px;text-align:left;line-height:1.45;margin:7px 0}
 .done{border-radius:6px}
 @media(max-height:760px){.speed{height:39px}.card{padding-top:5px;padding-bottom:5px}.train{font-size:35px}}
+
+/* Railway Pro · pulido final para lectura rápida en iPhone */
+.card{border-left:1px solid #34404a}
+.card:first-of-type{border-left:3px solid #cf414b}
+.metric,.length,.unit{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;font-variant-numeric:tabular-nums;font-weight:750;letter-spacing:-.6px}
+.length{width:auto;max-width:75%;min-width:0;text-align:right}
+.unit{margin-left:1px}
+.driveTimer{padding:5px 8px;box-shadow:0 -5px 18px #0009}
+.driveDigits{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;font-variant-numeric:tabular-nums;font-weight:750;letter-spacing:0;font-size:clamp(24px,6.7vw,29px);line-height:1.05;margin:1px 0 3px}
+.driveHead{font-size:10px;line-height:1.1}
+.driveHead select{padding:3px 4px}
+.driveControls button{padding:5px 4px}
+.driveInfo{margin-top:2px;line-height:1.15}
+@media(max-height:760px){.driveTimer{padding:4px 7px}.driveDigits{font-size:24px}}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
