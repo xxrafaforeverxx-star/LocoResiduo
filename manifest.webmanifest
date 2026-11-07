@@ -1,0 +1,18 @@
+{
+  "name": "LocoResiduo",
+  "short_name": "LocoResiduo",
+  "description": "Prototipo auxiliar de cálculo de distancia de residuo",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090d13",
+  "theme_color": "#090d13",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
