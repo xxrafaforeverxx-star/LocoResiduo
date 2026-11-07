@@ -165,7 +165,17 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 #done .doneRail,#done .doneTrain{display:none!important}
 
 #done .doneAlarms{display:flex;justify-content:center;gap:10px;margin:1px 0 0;color:#8fe8b7;line-height:1}#done .doneAlarms svg{display:block;flex:none}#done .doneTop{justify-content:center}#done .completeInfo{text-align:center;margin-top:2px}
-</style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
+
+/* Ajustes Railway Pro y pantalla activa */
+.settingsOpen{flex:none;width:30px;height:30px;border:1px solid #35434f;border-radius:6px;background:#19232c;color:#d6e0e8;font-size:19px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0}
+.settingsOverlay[hidden]{display:none!important}
+.settingsOverlay{position:fixed;z-index:100;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px;padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+.settingsPanel{width:min(100%,430px);max-height:85dvh;overflow-y:auto;background:#141c24;border:1px solid #425260;border-radius:12px;box-shadow:0 20px 70px #000b;padding:17px;color:#edf3f7;text-align:left}
+.settingsHead{display:flex;align-items:start;justify-content:space-between;margin-bottom:18px}.settingsKicker{font-size:10px;letter-spacing:1.4px;color:#8c9eab}.settingsHead h2{font-size:22px;letter-spacing:.5px;margin:3px 0 0}.settingsHead button{background:#26333e;color:#eaf0f5;border:1px solid #455767;border-radius:6px;width:32px;height:32px}
+.settingsOption{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid #344451;border-radius:8px;padding:13px 10px}.settingsOption strong{font-size:13px}.settingsOption p{color:#9aabb9;font-size:11px;line-height:1.4;margin:5px 0 0}
+.settingsSwitch{position:relative;flex:none;width:45px;height:27px}.settingsSwitch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;z-index:1}.settingsSwitch span{display:block;background:#3a4753;border-radius:30px;width:45px;height:27px;transition:background .2s}.settingsSwitch span:after{content:"";display:block;position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#eaf0f4;transition:transform .2s}.settingsSwitch input:checked+span{background:#388d66}.settingsSwitch input:checked+span:after{transform:translateX(18px)}.settingsSwitch input:focus-visible+span{outline:2px solid #8fc9ff}
+.settingsStatus{color:#8ee0b4;font-size:11px;margin:10px 2px}.settingsHelp{color:#98a8b5;font-size:11px;line-height:1.45;margin:15px 2px}.settingsFooter{border-top:1px solid #344451;padding-top:10px;color:#708493;font-size:10px}
+</style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
 <div class="row"><div class="card"><div class="label">RECORRIDO</div><div class="metric" id="travelled">0 m</div></div><div class="card"><div class="label">RESTANTE</div><div class="metric redtext" id="remaining">0 m</div></div></div>
@@ -174,7 +184,7 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 <div class="actions"><button class="action" id="gpsResiduo"><span class="gpsButtonMark" aria-hidden="true">◎</span> RESIDUO GPS</button></div><div class="actions"><button class="action" id="pause" disabled>Pausar</button><button class="action danger" id="reset">Nuevo residuo</button></div>
 
 <section class="driveTimer" id="driveTimer"><div class="driveHead"><span><span class="driveMark" aria-hidden="true">◷</span> TIEMPO DE CONDUCCIÓN</span><label>Aviso <select id="driveLimit"><option value="300">5 h</option><option value="315">5 h 15 min</option><option value="330">5 h 30 min</option></select></label></div><div class="driveDigits" id="driveDigits">00:00:00</div><div class="driveControls"><button id="driveStart">Iniciar</button><button id="driveReset">Reiniciar</button></div><div class="driveInfo" id="driveInfo">Cronómetro ascendente · referencia 6 h · alarma solo con app activa</div></section><div class="trainArt">🚄 ━━━━━━━━━</div><details class="safetyDetails"><summary>Información de seguridad · herramienta auxiliar</summary><p class="note">PROTOTIPO DE PRUEBA · El GPS puede omitir distancia real o acumular errores. No usar durante la conducción. Las distancias GPS y las estimaciones pueden ser inexactas. No sustituye sistemas embarcados ni procedimientos ferroviarios. Safari puede detener GPS y audio en segundo plano.</p></details>
-</main>
+</main><div class="settingsOverlay" id="settingsOverlay" hidden><section class="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="settingsHead"><div><div class="settingsKicker">LOCORESIDUO</div><h2 id="settingsTitle">AJUSTES</h2></div><button id="settingsClose" type="button" aria-label="Cerrar ajustes">✕</button></div><div class="settingsOption"><div><strong>Mantener pantalla activa</strong><p>Intenta impedir el bloqueo automático mientras LocoResiduo está abierto.</p></div><label class="settingsSwitch"><input id="wakeToggle" type="checkbox" aria-label="Mantener pantalla activa"><span></span></label></div><div class="settingsStatus" id="wakeStatus" role="status">Comprobando compatibilidad…</div><p class="settingsHelp">En iPhone esta función depende de Safari y de iOS. Puede no estar disponible o detenerse al cambiar de aplicación, bloquear el teléfono o activar ahorro de batería.</p><div class="settingsFooter">Railway Pro · Configuración guardada en este dispositivo</div></section></div>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -218,6 +228,33 @@ $('driveStart').addEventListener('click',()=>{unlockAlarm();if(drive.startedAt==
 $('driveReset').addEventListener('click',()=>{if(!confirm('¿Reiniciar el tiempo de conducción a cero?'))return;drive={elapsed:0,startedAt:null,limit:Number($('driveLimit').value),alerted:false};saveDrive();renderDrive();});
 $('driveLimit').addEventListener('change',()=>{drive.limit=Number($('driveLimit').value);drive.alerted=driveSeconds()>=drive.limit*60?drive.alerted:false;saveDrive();renderDrive();});
 setInterval(renderDrive,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDrive();});renderDrive();
+
+/* Ajustes persistentes y Wake Lock opcional (sin alterar contadores) */
+const SETTINGS_KEY='locoresiduo-settings-v1';
+let appSettings={keepAwake:false};
+try{const stored=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');appSettings.keepAwake=stored.keepAwake===true;}catch(e){}
+let wakeSentinel=null;
+const wakeSupported='wakeLock' in navigator&&typeof navigator.wakeLock.request==='function';
+function wakeMessage(message){$('wakeStatus').textContent=message;}
+async function releaseWake(){if(wakeSentinel){const previous=wakeSentinel;wakeSentinel=null;try{await previous.release();}catch(e){}}}
+async function syncWake(){
+  if(!appSettings.keepAwake||document.hidden){await releaseWake();wakeMessage(appSettings.keepAwake?'En espera: vuelve a abrir la aplicación.':'Pantalla activa desactivada.');return;}
+  if(!wakeSupported){wakeMessage('Tu navegador no permite mantener la pantalla activa automáticamente.');return;}
+  if(wakeSentinel){wakeMessage('Pantalla activa mientras la aplicación esté visible.');return;}
+  try{const sentinel=await navigator.wakeLock.request('screen');if(!appSettings.keepAwake||document.hidden){await sentinel.release();return;}wakeSentinel=sentinel;sentinel.addEventListener('release',()=>{if(wakeSentinel===sentinel){wakeSentinel=null;wakeMessage('Bloqueo de pantalla liberado por iOS o el navegador.');}});wakeMessage('Pantalla activa mientras la aplicación esté visible.');}
+  catch(e){wakeMessage('No se ha podido activar: iOS puede limitar esta función.');}
+}
+function openSettings(){$('settingsOverlay').hidden=false;$('wakeToggle').checked=appSettings.keepAwake;$('settingsClose').focus();syncWake();}
+function closeSettings(){$('settingsOverlay').hidden=true;$('settingsOpen').focus();}
+$('settingsOpen').addEventListener('click',openSettings);
+$('settingsClose').addEventListener('click',closeSettings);
+$('settingsOverlay').addEventListener('click',event=>{if(event.target===$('settingsOverlay'))closeSettings();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('settingsOverlay').hidden)closeSettings();});
+$('wakeToggle').checked=appSettings.keepAwake;
+$('wakeToggle').addEventListener('change',()=>{appSettings.keepAwake=$('wakeToggle').checked;try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(appSettings));}catch(e){}syncWake();});
+document.addEventListener('visibilitychange',syncWake);
+if(appSettings.keepAwake)syncWake();else wakeMessage('Pantalla activa desactivada.');
+
 update();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').then(reg=>reg.update()).catch(()=>{});
 </script></body></html>
