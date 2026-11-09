@@ -469,9 +469,14 @@ $('dutyNextMonth').addEventListener('click',()=>{dutyMonth.setMonth(dutyMonth.ge
 const wrappedLocoPhotoCache=new Map();
 function wrappedLocoSearchTerm(raw){
  const name=String(raw||'').trim().slice(0,65);
- const digits=name.match(/(?:^|\D)(256|253|252|251|601|335|333|269|253|253)(?:\D|$)/);
- if(digits){const series=digits[1];return series==='256'?'Stadler Euro6000 locomotive':series==='601'?'Euro 6000 locomotive':series==='335'?'Vossloh Euro 4000 locomotive':'locomotive serie '+series;}
- if(/^\d{3,6}$/.test(name))return 'locomotive '+name;
+ // Normaliza matrículas completas: 601.008, 601-008, 256.030, 256030, etc.
+ const compact=name.toLowerCase().replace(/[^a-z0-9]/g,'');
+ const match=name.match(/(?:^|[^0-9])(601|256|335|333|269|253|252|251)(?=[^0-9]|[0-9]{2,4}(?:[^0-9]|$))/)||compact.match(/^(601|256|335|333|269|253|252|251)/);
+ const series=match?.[1]||(compact.includes('bitrac')?'601':compact.includes('euro6000')?'256':null);
+ if(series==='601')return 'Bitrac locomotive 601';
+ if(series==='256')return 'Stadler EURO6000 locomotive 256';
+ if(series==='335')return 'Vossloh EURO4000 locomotive 335';
+ if(series)return 'locomotive serie '+series;
  return name.length>=3?'locomotive '+name:'';
 }
 async function wrappedLoadLocoPhoto(raw,photo,card){
@@ -482,8 +487,8 @@ async function wrappedLoadLocoPhoto(raw,photo,card){
   const response=await fetch(url,{mode:'cors'});if(!response.ok)throw Error('Image search unavailable');
   const data=await response.json();const pages=Object.values(data.query?.pages||{}).filter(x=>x.imageinfo?.[0]?.thumburl&&/^image\//.test(x.imageinfo[0].mime||''));
   const rawTokens=String(raw).toLowerCase().match(/[a-z]{3,}|\d{3,}/g)||[];
-  const series=(String(raw).match(/\d{3}/)||[])[0];
-  const relevant=pages.filter(x=>{const title=x.title.toLowerCase();return series?title.includes(series)||(/256/.test(series)&&/euro.?6000|stadler/i.test(title)):rawTokens.some(t=>title.includes(t));});
+  const series=(String(raw).match(/(?:^|\D)(601|256|335|333|269|253|252|251)/)||[])[1]||(term.includes('Bitrac')?'601':term.includes('EURO6000')?'256':null);
+  const relevant=pages.filter(x=>{const title=x.title.toLowerCase();return series?title.includes(series)||(/256/.test(series)&&/euro.?6000|stadler/i.test(title))||(/601/.test(series)&&/bitrac/i.test(title)):rawTokens.some(t=>title.includes(t));});
   const selected=relevant[0];const result=selected?{url:selected.imageinfo[0].thumburl,title:selected.title}:null;
   wrappedLocoPhotoCache.set(term,result);
   if(result&&photo.isConnected&&card.contains(photo)){photo.style.backgroundImage='url("'+result.url+'")';photo.dataset.photoTitle=result.title;}
