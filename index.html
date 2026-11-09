@@ -350,6 +350,7 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 <div class="settingsStatus" id="vibrateStatus" role="status"></div>
 
 <div class="settingsFooter">LocoResiduo · Configuración guardada en este dispositivo</div></section></div>
+<div id="locoAlertOverlay" class="locoAlertOverlay" hidden role="alertdialog" aria-modal="true" aria-labelledby="locoAlertTitle" aria-describedby="locoAlertMessage"><div class="locoAlertPanel"><div class="locoAlertHeading"><span class="locoAlertSymbol">🚂</span><strong id="locoAlertTitle">LocoResiduo dice</strong></div><p id="locoAlertMessage"></p><button type="button" id="locoAlertOk">Aceptar</button></div></div>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -678,4 +679,4 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('shiftsOverlay')
 update();
 setupChristmasWrapped();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').then(reg=>reg.update()).catch(()=>{});
-</script><div id="locoAlertOverlay" class="locoAlertOverlay" hidden role="alertdialog" aria-modal="true" aria-labelledby="locoAlertTitle" aria-describedby="locoAlertMessage"><div class="locoAlertPanel"><div class="locoAlertHeading"><span class="locoAlertSymbol">🚂</span><strong id="locoAlertTitle">LocoResiduo dice</strong></div><p id="locoAlertMessage"></p><button type="button" id="locoAlertOk">Aceptar</button></div></div></body></html>
+</script></body></html>
