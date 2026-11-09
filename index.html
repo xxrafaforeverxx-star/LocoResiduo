@@ -337,7 +337,7 @@ let shifts=readShifts();
 function storeShifts(){try{localStorage.setItem(SHIFTS_KEY,JSON.stringify(shifts));return true;}catch(e){$('shiftMessage').textContent='No se ha podido guardar. Comprueba el espacio disponible.';return false;}}
 function clearShiftForm(){$('shiftForm').reset();$('shiftEditId').value='';$('shiftTravelTime').disabled=true;$('shiftTravelTime').required=false;$('shiftTravelDuration').disabled=true;$('shiftTravelDuration').required=false;$('shiftSave').textContent='Guardar turno';$('shiftMessage').textContent='';}
 function openShiftSummary(month,panel){
- const overlay=$('shiftSummaryOverlay');$('shiftSummaryTitle').textContent='Resumen · '+month;$('shiftSummaryContent').replaceChildren(panel.cloneNode(true));overlay.hidden=false;$('shiftSummaryClose').focus();
+ const overlay=$('shiftSummaryOverlay');$('shiftSummaryTitle').textContent='Resumen · '+month;const content=panel.cloneNode(true);content.hidden=false;$('shiftSummaryContent').replaceChildren(content);overlay.hidden=false;$('shiftSummaryClose').focus();
 }
 function closeShiftSummary(){$('shiftSummaryOverlay').hidden=true;$('shiftSummaryContent').replaceChildren();}
 $('shiftSummaryClose').addEventListener('click',closeShiftSummary);
