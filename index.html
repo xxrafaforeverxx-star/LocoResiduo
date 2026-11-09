@@ -417,7 +417,7 @@ function drawDutyCalendar(){
 $('dutyPrevMonth').addEventListener('click',()=>{dutyMonth.setMonth(dutyMonth.getMonth()-1);drawDutyCalendar();});
 $('dutyNextMonth').addEventListener('click',()=>{dutyMonth.setMonth(dutyMonth.getMonth()+1);drawDutyCalendar();});
 function drawDutyWrapped(){
- const select=$('dutyYear'),years=[...new Set(shifts.map(x=>Number(x.date.slice(0,4))).filter(Number.isFinite))].sort((a,b)=>b-a);if(!years.length)years.push(new Date().getFullYear());const chosen=Number(select.value);select.replaceChildren();for(const y of years){const option=document.createElement('option');option.value=y;option.textContent=y;select.append(option);}if(years.includes(chosen))select.value=chosen;
+ const select=$('dutyYear'),years=[...new Set(shifts.map(x=>Number(x.date.slice(0,4))).filter(Number.isFinite))].sort((a,b)=>b-a);const season=wrappedSeasonYear();if(!years.includes(season))years.unshift(season);const chosen=Number(select.value);select.replaceChildren();for(const y of years){const option=document.createElement('option');option.value=y;option.textContent=y;select.append(option);}if(years.includes(chosen))select.value=chosen;else select.value=String(season);
  const y=Number(select.value),items=shifts.filter(x=>Number(x.date.slice(0,4))===y),total=items.reduce((n,x)=>n+dutyLength(x),0),extras=items.reduce((n,x)=>n+Math.max(0,dutyLength(x)-480),0),rest=items.filter(x=>x.status==='rest').length;
  const stations=new Map(),locos=new Map(),routes=new Map(),months=new Map();for(const x of items){for(const station of [x.from,x.to])if(station)stations.set(station,(stations.get(station)||0)+1);if(x.loco)locos.set(x.loco,(locos.get(x.loco)||0)+1);const route=x.from+' → '+x.to;routes.set(route,(routes.get(route)||0)+1);const month=x.date.slice(0,7);months.set(month,(months.get(month)||0)+dutyLength(x));}
  const top=map=>[...map].sort((a,b)=>b[1]-a[1])[0];const station=top(stations),loco=top(locos),route=top(routes),month=top(months);
@@ -432,7 +432,8 @@ function drawDutyWrapped(){
 }
 
 /* Especial de Navidad: aviso al abrir la app el 25 de diciembre, sin push remoto */
-const isChristmasDay=()=>{const d=new Date();return d.getMonth()===11&&d.getDate()===25;};
+const isChristmasDay=()=>{const d=new Date(),m=d.getMonth(),day=d.getDate();return(m===11&&day>=23)||(m===0&&day<=10);};
+const wrappedSeasonYear=()=>{const d=new Date();return d.getMonth()===0?d.getFullYear()-1:d.getFullYear();};
 let christmasAudio=null;
 function christmasSong(){
  const rate=22050,duration=12.4,pcm=new Uint8Array(44+Math.ceil(rate*duration)*2),v=new DataView(pcm.buffer);
@@ -451,7 +452,7 @@ function openChristmasWrapped(){
 function setupChristmasWrapped(){
  const active=isChristmasDay();$('dutyWrappedTab').hidden=!active;$('dutyWrapped').hidden=true;
  if(!active)return;
- const key='locoresiduo-christmas-notice-'+new Date().getFullYear();
+ const key='locoresiduo-christmas-notice-'+wrappedSeasonYear();
  if(localStorage.getItem(key)==='shown')return;
  $('christmasNotice').hidden=false;
  try{localStorage.setItem(key,'shown');}catch(e){}
