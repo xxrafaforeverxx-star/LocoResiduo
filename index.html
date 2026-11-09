@@ -313,6 +313,21 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 .dutyWrappedCard::before,.dutyWrappedCard::after{display:none!important}
 @keyframes wrappedPhotoReveal{from{opacity:0;transform:scale(1.13);filter:blur(8px) saturate(.8)}to{opacity:1;transform:scale(1);filter:blur(0) saturate(1.1)}}
 @media(prefers-reduced-motion:reduce){.dutyWrappedCard .wrappedPhoto{animation:none!important}}
+
+/* Portada ferroviaria fotográfica del Wrapped con nieve por encima */
+.wrappedShakeScene{
+ background:
+ linear-gradient(180deg,rgba(5,16,29,.42) 0%,rgba(7,20,34,.55) 42%,rgba(5,17,29,.89) 100%),
+ url("https://commons.wikimedia.org/wiki/Special:FilePath/Going_home_%28Unsplash%29.jpg?width=1400") center center / cover no-repeat,
+ linear-gradient(160deg,#102a43,#254b55)!important
+}
+.wrappedShakeScene::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 30%,#ffffff16,transparent 65%);z-index:0}
+.wrappedShakeScene .wrappedSnow{z-index:1;opacity:1}
+.wrappedShakeScene .wrappedShakeSky{z-index:2}
+.wrappedShakeScene .wrappedShakeKicker{color:#f8e6b2;text-shadow:0 2px 10px #000}
+.wrappedShakeScene .wrappedShakeSky h2{color:#fff5d4;text-shadow:0 3px 16px #000,0 0 22px #e6bf7280}
+.wrappedShakeScene .wrappedShakeSky p{text-shadow:0 2px 10px #000,0 0 12px #000}
+.wrappedShakeScene .wrappedTrain{background:#0a1b28b8;border:1px solid #ccebd04d;border-radius:16px;padding:10px 7px;box-shadow:0 14px 30px #0007}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="shiftsOpen" class="settingsOpen" aria-label="Abrir turnos" title="Mis turnos">▤</button><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
@@ -464,7 +479,7 @@ function drawDutyWrapped(){
  'SWB_A_101_cab_interior_4.jpg',
  'Stanmore_Railway_Station_at_Night.jpg',
  'Train_Station_at_night_(35106963235).jpg',
- 'Newtown_Railway_Station_at_Night.jpg',
+ 'Going_home_(Unsplash).jpg',
  'Cargo_train_standing_at_station_,_night_view_-_Rahim_Yar_Khan_railway_station.jpg',
  'Ljubljana_train_station_at_night.JPG',
  'Virgin_trains_390012_cab_interior.jpg'
