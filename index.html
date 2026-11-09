@@ -465,6 +465,30 @@ function drawDutyCalendar(){
 }
 $('dutyPrevMonth').addEventListener('click',()=>{dutyMonth.setMonth(dutyMonth.getMonth()-1);drawDutyCalendar();});
 $('dutyNextMonth').addEventListener('click',()=>{dutyMonth.setMonth(dutyMonth.getMonth()+1);drawDutyCalendar();});
+/* Fotografía contextual de la locomotora más usada. Wikimedia Commons, sin claves ni datos de turnos enviados. */
+const wrappedLocoPhotoCache=new Map();
+function wrappedLocoSearchTerm(raw){
+ const name=String(raw||'').trim().slice(0,65);
+ const digits=name.match(/(?:^|\D)(256|253|252|251|601|335|333|269|253|253)(?:\D|$)/);
+ if(digits){const series=digits[1];return series==='256'?'Stadler Euro6000 locomotive':series==='601'?'Euro 6000 locomotive':series==='335'?'Vossloh Euro 4000 locomotive':'locomotive serie '+series;}
+ if(/^\d{3,6}$/.test(name))return 'locomotive '+name;
+ return name.length>=3?'locomotive '+name:'';
+}
+async function wrappedLoadLocoPhoto(raw,photo,card){
+ const term=wrappedLocoSearchTerm(raw);if(!term)return;
+ if(wrappedLocoPhotoCache.has(term)){const result=wrappedLocoPhotoCache.get(term);if(result&&photo.isConnected){photo.style.backgroundImage='url("'+result.url+'")';photo.dataset.photoTitle=result.title;}return;}
+ try{
+  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent('filetype:bitmap '+term)+'&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url|mime&iiurlwidth=1100&format=json&origin=*';
+  const response=await fetch(url,{mode:'cors'});if(!response.ok)throw Error('Image search unavailable');
+  const data=await response.json();const pages=Object.values(data.query?.pages||{}).filter(x=>x.imageinfo?.[0]?.thumburl&&/^image\//.test(x.imageinfo[0].mime||''));
+  const rawTokens=String(raw).toLowerCase().match(/[a-z]{3,}|\d{3,}/g)||[];
+  const series=(String(raw).match(/\d{3}/)||[])[0];
+  const relevant=pages.filter(x=>{const title=x.title.toLowerCase();return series?title.includes(series)||(/256/.test(series)&&/euro.?6000|stadler/i.test(title)):rawTokens.some(t=>title.includes(t));});
+  const selected=relevant[0];const result=selected?{url:selected.imageinfo[0].thumburl,title:selected.title}:null;
+  wrappedLocoPhotoCache.set(term,result);
+  if(result&&photo.isConnected&&card.contains(photo)){photo.style.backgroundImage='url("'+result.url+'")';photo.dataset.photoTitle=result.title;}
+ }catch(e){wrappedLocoPhotoCache.set(term,null);}
+}
 function drawDutyWrapped(){
  const select=$('dutyYear'),years=[...new Set(shifts.map(x=>Number(x.date.slice(0,4))).filter(Number.isFinite))].sort((a,b)=>b-a);const season=wrappedSeasonYear();if(!years.includes(season))years.unshift(season);const chosen=Number(select.value);select.replaceChildren();for(const y of years){const option=document.createElement('option');option.value=y;option.textContent=y;select.append(option);}if(years.includes(chosen))select.value=chosen;else select.value=String(season);
  const y=Number(select.value),items=shifts.filter(x=>Number(x.date.slice(0,4))===y),total=items.reduce((n,x)=>n+dutyLength(x),0),extras=items.reduce((n,x)=>n+Math.max(0,dutyLength(x)-480),0),rest=items.filter(x=>x.status==='rest').length;
@@ -477,14 +501,14 @@ function drawDutyWrapped(){
  'Freight_train_in_darkness.jpg',
  'Station_at_night.jpg',
  'SWB_A_101_cab_interior_4.jpg',
- 'Stanmore_Railway_Station_at_Night.jpg',
+ 'Freight_train_in_darkness.jpg',
  'Train_Station_at_night_(35106963235).jpg',
  'Going_home_(Unsplash).jpg',
  'Cargo_train_standing_at_station_,_night_view_-_Rahim_Yar_Khan_railway_station.jpg',
  'Ljubljana_train_station_at_night.JPG',
  'Virgin_trains_390012_cab_interior.jpg'
  ];
- const photo=document.createElement('div');photo.className='wrappedPhoto';photo.style.backgroundImage='url("https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(photos[dutySlide])+'?width=900")';photo.setAttribute('aria-hidden','true');card.append(photo);
+ const photo=document.createElement('div');photo.className='wrappedPhoto';photo.style.backgroundImage='url("https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(photos[dutySlide])+'?width=900")';photo.setAttribute('aria-hidden','true');card.append(photo);if(dutySlide===4&&loco)wrappedLoadLocoPhoto(loco[0],photo,card);
 const decoration=document.createElement('div');decoration.className='wrappedRailArt';decoration.setAttribute('aria-hidden','true');decoration.innerHTML='<svg class="wrappedTrack" viewBox="0 0 360 440" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="railGlow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c5ffe1" stop-opacity=".1"/><stop offset="1" stop-color="#c5ffe1" stop-opacity=".7"/></linearGradient></defs><path d="M173 160L15 450M187 160L345 450" stroke="url(#railGlow)" stroke-width="4" fill="none"/><path d="M178 160L87 450M182 160L273 450" stroke="#b4f5d0" stroke-opacity=".3" stroke-width="2" fill="none"/><path d="M166 184h28M155 206h50M143 233h74M127 267h106M107 306h146M82 355h196M54 409h252" stroke="#b4f5d0" stroke-opacity=".32" stroke-width="5"/><path d="M45 190V95h4v95m-12-96h20v39H37z" stroke="#c9f8e4" stroke-opacity=".5" stroke-width="3" fill="none"/><circle cx="47" cy="104" r="5" fill="#f96d75"/><circle cx="47" cy="119" r="5" fill="#f5d66b" opacity=".35"/><path d="M315 190V70h4v120m-14-120h24v50h-24z" stroke="#c9f8e4" stroke-opacity=".45" stroke-width="3" fill="none"/><circle cx="317" cy="81" r="6" fill="#80f0b2"/><circle cx="317" cy="100" r="6" fill="#f96d75" opacity=".25"/><path d="M90 162h180" stroke="#b7ffe0" stroke-opacity=".15" stroke-width="2"/></svg>';const scenes=[
 '<path d="M40 450L171 175M320 450L189 175M105 450L176 175M255 450L184 175" stroke="#d4ffe6" stroke-width="4" fill="none"/><path d="M32 418h296M55 365h250M80 319h200M105 277h150M125 239h110M146 207h68" stroke="#d4ffe6" stroke-width="7"/><path d="M38 205V100h4v105m-12-105h20v45H30z" stroke="#d4ffe6" stroke-width="3" fill="none"/><circle cx="40" cy="113" r="7" fill="#ff6969"/>',
 '<path d="M40 450L171 175M320 450L189 175M105 450L176 175M255 450L184 175" stroke="#d4ffe6" stroke-width="4" fill="none"/><path d="M32 418h296M55 365h250M80 319h200M105 277h150M125 239h110M146 207h68" stroke="#d4ffe6" stroke-width="7"/><path d="M130 182V94Q180 55 230 94V182Z" stroke="#e6fff4" stroke-width="5" fill="#b4ffe422"/><rect x="144" y="111" width="72" height="36" rx="6" stroke="#e6fff4" stroke-width="4" fill="none"/><circle cx="146" cy="165" r="7" fill="#fff3a0"/><circle cx="214" cy="165" r="7" fill="#fff3a0"/>',
