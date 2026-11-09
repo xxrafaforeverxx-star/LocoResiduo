@@ -394,7 +394,6 @@ function renderShifts(){
  'Media por turno':'<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l-3 2"/>',
  'Turno más largo':'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3M18.5 6.5l1.5-1.5"/>'
  };symbol.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+paths[label]+'</svg>';symbol.setAttribute('aria-hidden','true');metric.prepend(symbol);}summaryPanel.append(metric);}
-  const explanation=document.createElement('p');explanation.className='shiftSummaryNote';explanation.textContent='Extras a partir de 8 h por turno, sin duplicar el desplazamiento. Una dieta por turno. Importes y condiciones sujetos al convenio; cálculo orientativo.'+(missingTravel?' Hay '+missingTravel+' desplazamiento(s) antiguos sin duración: edítalos para incluirlos.':'');summaryPanel.append(explanation);
   summaryButton.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openShiftSummary(title.textContent,summaryPanel);});
   
   for(const item of items){
