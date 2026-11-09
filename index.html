@@ -412,7 +412,8 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 "use strict";
 const $=id=>document.getElementById(id);
 const state={mode:'manual',speed:0,travelled:0,running:false,paused:false,complete:false,lastGPS:null,lastTick:performance.now(),lastPositionAt:0,watch:null,audio:null};
-const target=()=>Math.max(0,Number($('length').value.replace(',','.'))||0);
+const target=()=>{const raw=$('length').value.trim().replace(',','.');const n=Number(raw);return raw&&Number.isFinite(n)&&n>0&&n<=5000?n:0;};
+const hasValidTrain=()=>Boolean($('train').value.trim())&&target()>0;
 const fmt=n=>Math.max(0,Math.round(n)).toLocaleString('es-ES');
 function update(){const t=target();$('travelled').textContent=fmt(state.travelled)+' m';$('remaining').textContent=fmt(Math.max(0,t-state.travelled))+' m';$('progress').style.width=(t?Math.min(100,state.travelled/t*100):0)+'%';$('remaining').style.color=t&&state.travelled>=t?'#4ade80':'#ef4444';}
 function speak(message){if(typeof appSettings!=='undefined'&&!appSettings.voice)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.lang='es-ES';speechSynthesis.speak(u);}catch(e){}}
@@ -425,7 +426,7 @@ function makeStartSound(){const rate=22050,n=Math.floor(rate*.17),buffer=new Arr
 const startSound=new Audio(makeStartSound());startSound.preload='auto';startSound.setAttribute('playsinline','');
 function confirmStart(){if(!appSettings.sounds)return;try{startSound.pause();startSound.currentTime=0;const p=startSound.play();if(p)p.catch(()=>{});}catch(e){}}
 function finish(){if(state.complete)return;clearResidue();state.complete=true;state.running=false;stopGPS();$('done').style.display='block';$('voice').textContent='Distancia calculada alcanzada';tone();if(appSettings.vibration&&navigator.vibrate)navigator.vibrate([200,120,200,120,200]);$('pause').disabled=true;}
-function addDistance(m){if(!state.running||state.paused||state.complete)return;state.travelled=Math.min(target(),state.travelled+Math.max(0,m));update();if(target()>0&&state.travelled>=target())finish();}
+function addDistance(m){if(!state.running||state.paused||state.complete||!Number.isFinite(m)||m<=0||target()<=0)return;state.travelled=Math.min(target(),state.travelled+Math.max(0,m));update();if(target()>0&&state.travelled>=target())finish();}
 function meters(a,b){const R=6371000,toRad=v=>v*Math.PI/180,dlat=toRad(b.latitude-a.latitude),dlon=toRad(b.longitude-a.longitude),x=Math.sin(dlat/2)**2+Math.cos(toRad(a.latitude))*Math.cos(toRad(b.latitude))*Math.sin(dlon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
 function stopGPS(){if(state.watch!==null&&navigator.geolocation){navigator.geolocation.clearWatch(state.watch);state.watch=null;}state.lastGPS=null;}
 let gpsLastFixAt=0;
@@ -435,8 +436,8 @@ function startGPS(){stopGPS();gpsLastFixAt=0;gpsQuality('wait');if(!('geolocatio
 function locoAlert(message){$('locoAlertMessage').textContent=message;$('locoAlertOverlay').hidden=false;$('locoAlertOk').focus();}
 $('locoAlertOk').addEventListener('click',()=>{$('locoAlertOverlay').hidden=true;});
 $('locoAlertOverlay').addEventListener('click',e=>{if(e.target===$('locoAlertOverlay'))$('locoAlertOverlay').hidden=true;});
-function selectSpeed(v){if(!$('train').value.trim()||!Number.isFinite(target())||target()<=0){locoAlert('Introduce el número y la longitud total del tren.');return;}state.audio=state.audio||(window.AudioContext?new AudioContext():window.webkitAudioContext?new webkitAudioContext():null);state.audio?.resume();unlockAlarm();if(state.audio){try{const o=state.audio.createOscillator(),g=state.audio.createGain();g.gain.value=0;o.connect(g);g.connect(state.audio.destination);o.start();o.stop(state.audio.currentTime+0.01);}catch(e){}}if(!state.running||state.paused||state.complete)confirmStart();state.mode='manual';state.speed=v;$('gpsResiduo').classList.remove('active');document.querySelectorAll('.speed').forEach(b=>b.classList.toggle('active',Number(b.dataset.speed)===v));$('voice').textContent='Velocidad seleccionada: '+v+' km/h';speak(v+' kilómetros por hora');if(!state.running){clearResidue();state.travelled=0;state.complete=false;state.paused=false;$('done').style.display='none';state.running=true;state.lastTick=performance.now();startGPS();$('pause').disabled=false;$('pause').textContent='Pausar';}update();}
-$('gpsResiduo').addEventListener('click',()=>{if(!$('train').value.trim()||target()<=0){locoAlert('Introduce el número y la longitud del tren.');return;}unlockAlarm();confirmStart();clearResidue();state.mode='gps';state.speed=0;state.travelled=0;state.complete=false;state.paused=false;state.running=true;state.lastPositionAt=0;state.lastTick=performance.now();$('done').style.display='none';$('gpsResiduo').classList.add('active');document.querySelectorAll('.speed').forEach(b=>b.classList.remove('active'));$('pause').disabled=false;$('pause').textContent='Pausar';$('voice').textContent='RESIDUO GPS · esperando desplazamiento fiable';startGPS();update();});
+function selectSpeed(v){if(!hasValidTrain()){locoAlert('Introduce el número y la longitud total del tren.');return;}state.audio=state.audio||(window.AudioContext?new AudioContext():window.webkitAudioContext?new webkitAudioContext():null);state.audio?.resume();unlockAlarm();if(state.audio){try{const o=state.audio.createOscillator(),g=state.audio.createGain();g.gain.value=0;o.connect(g);g.connect(state.audio.destination);o.start();o.stop(state.audio.currentTime+0.01);}catch(e){}}if(!state.running||state.paused||state.complete)confirmStart();state.mode='manual';state.speed=v;$('gpsResiduo').classList.remove('active');document.querySelectorAll('.speed').forEach(b=>b.classList.toggle('active',Number(b.dataset.speed)===v));$('voice').textContent='Velocidad seleccionada: '+v+' km/h';speak(v+' kilómetros por hora');if(!state.running){clearResidue();state.travelled=0;state.complete=false;state.paused=false;$('done').style.display='none';state.running=true;state.lastTick=performance.now();startGPS();$('pause').disabled=false;$('pause').textContent='Pausar';}update();}
+$('gpsResiduo').addEventListener('click',()=>{if(!hasValidTrain()){locoAlert('Introduce el número y la longitud del tren.');return;}unlockAlarm();confirmStart();clearResidue();state.mode='gps';state.speed=0;state.travelled=0;state.complete=false;state.paused=false;state.running=true;state.lastPositionAt=0;state.lastTick=performance.now();$('done').style.display='none';$('gpsResiduo').classList.add('active');document.querySelectorAll('.speed').forEach(b=>b.classList.remove('active'));$('pause').disabled=false;$('pause').textContent='Pausar';$('voice').textContent='RESIDUO GPS · esperando desplazamiento fiable';startGPS();update();});
 for(let v=10;v<=100;v+=10){const b=document.createElement('button');b.className='speed';b.textContent=v;b.dataset.speed=v;b.addEventListener('click',()=>selectSpeed(v));$('speeds').append(b);}
 $('pause').addEventListener('click',()=>{if(!state.running)return;state.paused=!state.paused;state.lastTick=performance.now();state.lastGPS=null;$('pause').textContent=state.paused?'Reanudar':'Pausar';if(state.paused)stopGPS();else startGPS();});
 $('reset').addEventListener('click',()=>{clearResidue();stopGPS();state.running=false;state.paused=false;state.complete=false;state.travelled=0;state.speed=0;state.mode='manual';state.lastPositionAt=0;$('gpsResiduo').classList.remove('active');$('done').style.display='none';$('voice').textContent='';$('pause').disabled=true;$('pause').textContent='Pausar';gpsLastFixAt=0;gpsQuality('wait');$('gpsStatus').textContent='GPS pendiente';$('gpsSpeed').textContent='--';$('accuracy').textContent='--';document.querySelectorAll('.speed').forEach(b=>b.classList.remove('active'));update();});
@@ -445,15 +446,16 @@ setInterval(()=>{const now=performance.now(),dt=Math.min(1,(now-state.lastTick)/
 document.addEventListener('visibilitychange',()=>{state.lastTick=performance.now();if(document.hidden&&state.running&&!state.paused){state.paused=true;stopGPS();$('pause').textContent='Reanudar';$('voice').textContent='Pausado al salir de la aplicación';}});
 
 // Cronómetro de conducción independiente del contador de distancia.
-const DRIVE_KEY='locoresiduo-drive-v1';let drive={elapsed:0,startedAt:null,limit:300,alerted:false};try{const saved=JSON.parse(localStorage.getItem(DRIVE_KEY)||'null');if(saved&&Number.isFinite(saved.elapsed)&&[300,315,330].includes(saved.limit)){drive={elapsed:Math.max(0,saved.elapsed),startedAt:Number.isFinite(saved.startedAt)?saved.startedAt:null,limit:saved.limit,alerted:!!saved.alerted};}}catch(e){}
+const DRIVE_KEY='locoresiduo-drive-v1';let drive={elapsed:0,startedAt:null,limit:300,alerted:false};try{const saved=JSON.parse(localStorage.getItem(DRIVE_KEY)||'null');if(saved&&Number.isFinite(saved.elapsed)&&[300,315,330].includes(saved.limit)){drive={elapsed:Math.max(0,saved.elapsed),startedAt:null,limit:saved.limit,alerted:!!saved.alerted};}}catch(e){}
 $('driveLimit').value=String(drive.limit);
 function driveSeconds(){return drive.elapsed+(drive.startedAt!==null?Math.max(0,(Date.now()-drive.startedAt)/1000):0);}
+function pauseDriveForBackground(){if(drive.startedAt!==null){drive.elapsed=driveSeconds();drive.startedAt=null;saveDrive();renderDrive();}}
 function saveDrive(){try{localStorage.setItem(DRIVE_KEY,JSON.stringify(drive));}catch(e){}}
 function renderDrive(){const sec=Math.floor(driveSeconds()),hours=Math.floor(sec/3600),minutes=Math.floor(sec%3600/60),seconds=sec%60;$('driveDigits').textContent=[hours,minutes,seconds].map(n=>String(n).padStart(2,'0')).join(':');$('driveTimer').classList.toggle('warn',drive.alerted);$('driveStart').textContent=drive.startedAt===null&&sec>0?'Continuar':'Iniciar';$('driveInfo').textContent=drive.alerted?'⚠ Aviso de tiempo alcanzado · límite de referencia 6 h':drive.startedAt!==null?'Contando · aviso a las '+(drive.limit===300?'5 h':drive.limit===315?'5 h 15 min':'5 h 30 min'):'En pausa · aviso solo con app activa';if(drive.startedAt!==null&&!drive.alerted&&driveSeconds()>=drive.limit*60){drive.alerted=true;saveDrive();$('driveTimer').classList.add('warn');$('driveInfo').textContent='⚠ ¡Tiempo de conducción alcanzado!';tone();setTimeout(()=>speak('Aviso. Tiempo de conducción alcanzado.'),1500);}}
 $('driveStart').addEventListener('click',()=>{unlockAlarm();if(drive.startedAt===null){confirmStart();drive.startedAt=Date.now();saveDrive();}renderDrive();});
 $('driveReset').addEventListener('click',()=>{if(!confirm('¿Reiniciar el tiempo de conducción a cero?'))return;drive={elapsed:0,startedAt:null,limit:Number($('driveLimit').value),alerted:false};saveDrive();renderDrive();});
 $('driveLimit').addEventListener('change',()=>{drive.limit=Number($('driveLimit').value);drive.alerted=driveSeconds()>=drive.limit*60?drive.alerted:false;saveDrive();renderDrive();});
-setInterval(renderDrive,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDrive();});renderDrive();
+setInterval(renderDrive,1000);document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDriveForBackground();else renderDrive();});window.addEventListener('pagehide',pauseDriveForBackground);renderDrive();
 
 /* Ajustes persistentes y Wake Lock opcional (sin alterar contadores) */
 const SETTINGS_KEY='locoresiduo-settings-v1';
@@ -596,8 +598,7 @@ $('dutyNextSlide').addEventListener('click',()=>{if(dutySlide<9){dutySlide++;dra
 $('dutyYear').addEventListener('change',()=>{dutySlide=0;drawDutyWrapped();});
 
 /* Especial de Navidad: aviso al abrir la app el 25 de diciembre, sin push remoto */
-const wrappedTestMode=new URLSearchParams(location.search).get('wrappedTest')==='1';
-const isChristmasDay=()=>{if(wrappedTestMode)return true;const d=new Date(),m=d.getMonth(),day=d.getDate();return(m===11&&day>=23)||(m===0&&day<=10);};
+const isChristmasDay=()=>{const d=new Date(),m=d.getMonth(),day=d.getDate();return(m===11&&day>=23)||(m===0&&day<=10);};
 
 let wrappedShakeLast=0,wrappedShakeCount=0,wrappedShakeRunning=false,wrappedShakeUnlocked=false,wrappedShakeTimer=null;
 function wrappedMotion(e){
@@ -673,12 +674,12 @@ function openChristmasWrapped(){
  $('christmasNotice').hidden=true;$('shiftsOverlay').hidden=false;renderShifts();dutyTab('Wrapped');dutySlide=0;drawDutyWrapped();
 }
 function setupChristmasWrapped(){
- const active=isChristmasDay();$('dutyWrappedTab').hidden=!active;if(wrappedTestMode){$('dutyWrappedTab').textContent='🧪 Wrapped';$('christmasTitle').textContent='🧪 Prueba del Expreso de Navidad';}$('dutyWrapped').hidden=true;
+ const active=isChristmasDay();$('dutyWrappedTab').hidden=!active;$('dutyWrapped').hidden=true;
  if(!active)return;
  const key='locoresiduo-christmas-notice-'+wrappedSeasonYear();
- if(!wrappedTestMode&&localStorage.getItem(key)==='shown')return;
+ if(localStorage.getItem(key)==='shown')return;
  $('christmasNotice').hidden=false;
- if(!wrappedTestMode)try{localStorage.setItem(key,'shown');}catch(e){}
+ try{localStorage.setItem(key,'shown');}catch(e){}
 }
 $('christmasOpen').addEventListener('click',openChristmasWrapped);
 $('christmasDismiss').addEventListener('click',()=>{$('christmasNotice').hidden=true;});
