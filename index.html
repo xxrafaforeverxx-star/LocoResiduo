@@ -378,6 +378,19 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
 .wrappedShakeScene.departing .wrappedShakeSky{animation:wrappedIntroFade 1.5s ease forwards}
 @keyframes wrappedIntroFade{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
 @media(prefers-reduced-motion:reduce){.wrappedShakeScene.departing .wrappedShakeSky{animation:none!important}}
+
+/* Ajuste final de portada: impedir que aparezca la locomotora antigua */
+#wrappedShakeScene .wrappedTrain,#wrappedShakeScene .wrappedTrain svg{display:none!important}
+#wrappedShakeScene .wrappedShakeActions button,
+#wrappedShakeScene .wrappedShakeActions button:first-child,
+#wrappedShakeScene .wrappedShakeActions button:last-child{
+ background:transparent!important;background-color:transparent!important;
+ color:#fff!important;border:1.5px solid rgba(255,255,255,.88)!important;
+ box-shadow:0 2px 10px #07152555!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ text-shadow:0 2px 5px #071525!important
+}
+#wrappedShakeScene .wrappedShakeActions button:active{background:rgba(255,255,255,.12)!important}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="shiftsOpen" class="settingsOpen" aria-label="Abrir turnos" title="Mis turnos">▤</button><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
