@@ -452,6 +452,11 @@ function drawDutyWrapped(){
 ];decoration.innerHTML='<svg class="wrappedTrack" viewBox="0 0 360 440" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+scenes[dutySlide%scenes.length]+'</svg>';card.append(decoration);card.classList.remove('wrappedSceneEnter');void card.offsetWidth;card.classList.add('wrappedSceneEnter');const small=document.createElement('span');small.textContent='✦ LOCORESIDUO '+y;const h=document.createElement('h3');h.textContent=slides[dutySlide][0];const value=document.createElement('strong');value.textContent=slides[dutySlide][1];const desc=document.createElement('p');desc.textContent=slides[dutySlide][2];card.append(small,h,value,desc);const bar=document.createElement('div');bar.className='wrappedProgressBars';for(let i=0;i<slides.length;i++){const segment=document.createElement('i');if(i<=dutySlide)segment.className='filled';bar.append(segment);}card.append(bar);$('dutySlideCount').textContent=(dutySlide+1)+' / '+slides.length;$('dutyPrevSlide').disabled=dutySlide===0;$('dutyNextSlide').disabled=dutySlide===slides.length-1;
 }
 
+// Navegación del Wrapped: cada botón cambia la diapositiva y actualiza su contenido.
+$('dutyPrevSlide').addEventListener('click',()=>{if(dutySlide>0){dutySlide--;drawDutyWrapped();}});
+$('dutyNextSlide').addEventListener('click',()=>{if(dutySlide<9){dutySlide++;drawDutyWrapped();}});
+$('dutyYear').addEventListener('change',()=>{dutySlide=0;drawDutyWrapped();});
+
 /* Especial de Navidad: aviso al abrir la app el 25 de diciembre, sin push remoto */
 const wrappedTestMode=new URLSearchParams(location.search).get('wrappedTest')==='1';
 const isChristmasDay=()=>{if(wrappedTestMode)return true;const d=new Date(),m=d.getMonth(),day=d.getDate();return(m===11&&day>=23)||(m===0&&day<=10);};
