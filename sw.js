@@ -1,4 +1,4 @@
-const CACHE='locoresiduo-offline-v39';
+const CACHE='locoresiduo-offline-v40';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg'];
 const OPTIONAL=['./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
