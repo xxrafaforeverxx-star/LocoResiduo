@@ -434,7 +434,8 @@ function drawDutyWrapped(){
 }
 
 /* Especial de Navidad: aviso al abrir la app el 25 de diciembre, sin push remoto */
-const isChristmasDay=()=>{const d=new Date(),m=d.getMonth(),day=d.getDate();return(m===11&&day>=23)||(m===0&&day<=10);};
+const wrappedTestMode=new URLSearchParams(location.search).get('wrappedTest')==='1';
+const isChristmasDay=()=>{if(wrappedTestMode)return true;const d=new Date(),m=d.getMonth(),day=d.getDate();return(m===11&&day>=23)||(m===0&&day<=10);};
 
 let wrappedShakeLast=0,wrappedShakeCount=0,wrappedShakeRunning=false,wrappedShakeUnlocked=false,wrappedShakeTimer=null;
 function wrappedMotion(e){
@@ -480,12 +481,12 @@ function openChristmasWrapped(){
  try{if(christmasAudio){christmasAudio.pause();christmasAudio.currentTime=0;}christmasAudio=new Audio(christmasSong());christmasAudio.volume=.85;const p=christmasAudio.play();if(p&&p.catch)p.catch(()=>{$('christmasSoundHint').hidden=false;});}catch(e){$('christmasSoundHint').hidden=false;}
 }
 function setupChristmasWrapped(){
- const active=isChristmasDay();$('dutyWrappedTab').hidden=!active;$('dutyWrapped').hidden=true;
+ const active=isChristmasDay();$('dutyWrappedTab').hidden=!active;if(wrappedTestMode){$('dutyWrappedTab').textContent='🧪 Wrapped';$('christmasTitle').textContent='🧪 Prueba del Expreso de Navidad';}$('dutyWrapped').hidden=true;
  if(!active)return;
  const key='locoresiduo-christmas-notice-'+wrappedSeasonYear();
- if(localStorage.getItem(key)==='shown')return;
+ if(!wrappedTestMode&&localStorage.getItem(key)==='shown')return;
  $('christmasNotice').hidden=false;
- try{localStorage.setItem(key,'shown');}catch(e){}
+ if(!wrappedTestMode)try{localStorage.setItem(key,'shown');}catch(e){}
 }
 $('christmasOpen').addEventListener('click',openChristmasWrapped);
 $('christmasDismiss').addEventListener('click',()=>{$('christmasNotice').hidden=true;});
