@@ -350,7 +350,7 @@ function renderShifts(){
   for(const [label,value] of metrics){const metric=document.createElement('div');metric.className='shiftSummaryMetric';const labelEl=document.createElement('span');labelEl.textContent=label;const valueEl=document.createElement('strong');valueEl.textContent=value;metric.append(labelEl,valueEl);summaryPanel.append(metric);}
   const explanation=document.createElement('p');explanation.className='shiftSummaryNote';explanation.textContent='Extras calculadas por turno a partir de 8 h. El desplazamiento extra se calcula después del tiempo de turno para evitar duplicidades. Una dieta por turno. Cálculo orientativo, no liquidación de nómina.'+(missingTravel?' Hay '+missingTravel+' desplazamiento(s) antiguos sin duración: edítalos para incluirlos.':'');summaryPanel.append(explanation);
   summaryButton.addEventListener('click',()=>{summaryPanel.hidden=!summaryPanel.hidden;summaryButton.setAttribute('aria-expanded',String(!summaryPanel.hidden));summaryButton.textContent=summaryPanel.hidden?'▤  Resumen':'▴  Ocultar resumen';});
-  body.append(summaryButton,summaryPanel);
+  
   for(const item of items){
    const card=document.createElement('article');card.className='shiftEntry';
    const top=document.createElement('div');top.className='shiftEntryTop';const day=document.createElement('div');day.className='shiftDay';const dayNumber=document.createElement('strong');dayNumber.textContent=item.date.slice(8,10);const dayWeek=document.createElement('span');dayWeek.textContent=new Intl.DateTimeFormat('es-ES',{weekday:'short'}).format(new Date(item.date+'T12:00:00')).replace('.','').toUpperCase();day.append(dayNumber,dayWeek);
@@ -362,7 +362,7 @@ function renderShifts(){
    if(details.childNodes.length)card.append(details);
    if(item.notes){const notes=document.createElement('p');notes.className='shiftEntryNotes';notes.textContent=item.notes;card.append(notes);}
    const actions=document.createElement('div');actions.className='shiftEntryButtons';const edit=document.createElement('button');edit.type='button';edit.textContent='Editar';edit.addEventListener('click',()=>editShift(item.id));const del=document.createElement('button');del.type='button';del.textContent='Eliminar';del.addEventListener('click',()=>{if(!confirm('¿Eliminar este turno guardado?'))return;const old=shifts;shifts=shifts.filter(x=>x.id!==item.id);if(storeShifts()){if($('shiftEditId').value===item.id)clearShiftForm();renderShifts();}else shifts=old;});actions.append(edit,del);card.append(actions);body.append(card);
-  }section.append(body);host.append(section);
+  }body.append(summaryButton,summaryPanel);section.append(body);host.append(section);
  }
 }
 function editShift(id){const d=shifts.find(x=>x.id===id);if(!d)return;$('shiftEditId').value=d.id;$('shiftDate').value=d.date;$('shiftTrain').value=d.train;$('shiftFrom').value=d.from;$('shiftTo').value=d.to;$('shiftStart').value=d.start;$('shiftEnd').value=d.end;$('shiftTravelType').value=d.travelType;$('shiftTravelTime').disabled=d.travelType==='none';$('shiftTravelTime').required=d.travelType!=='none';$('shiftTravelTime').value=d.travelTime||'';$('shiftTravelDuration').disabled=d.travelType==='none';$('shiftTravelDuration').required=d.travelType!=='none';$('shiftTravelDuration').value=d.travelDuration||'';$('shiftStatus').value=d.status;$('shiftLoco').value=d.loco;$('shiftNotes').value=d.notes;$('shiftSave').textContent='Guardar cambios';$('shiftMessage').textContent='Editando turno';$('shiftForm').scrollIntoView({block:'start',behavior:'smooth'});}
