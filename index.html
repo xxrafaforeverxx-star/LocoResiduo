@@ -442,7 +442,7 @@ function renderShifts(){
  }
 }
 function editShift(id){const d=shifts.find(x=>x.id===id);if(!d)return;$('shiftEditId').value=d.id;$('shiftDate').value=d.date;$('shiftTrain').value=d.train;$('shiftFrom').value=d.from;$('shiftTo').value=d.to;$('shiftStart').value=d.start;$('shiftEnd').value=d.end;$('shiftTravelType').value=d.travelType;$('shiftTravelTime').disabled=d.travelType==='none';$('shiftTravelTime').required=d.travelType!=='none';$('shiftTravelTime').value=d.travelTime||'';$('shiftTravelDuration').disabled=d.travelType==='none';$('shiftTravelDuration').required=d.travelType!=='none';$('shiftTravelDuration').value=d.travelDuration||'';$('shiftStatus').value=d.status;$('shiftLoco').value=d.loco;$('shiftNotes').value=d.notes;$('shiftSave').textContent='Guardar cambios';$('shiftMessage').textContent='Editando turno';$('shiftForm').scrollIntoView({block:'start',behavior:'smooth'});}
-$('shiftsOpen').addEventListener('click',()=>{$('shiftsOverlay').hidden=false;renderShifts();$('shiftsClose').focus();});
+$('shiftsOpen').addEventListener('click',()=>{$('shiftsOverlay').hidden=false;renderShifts();dutyTab('List');$('shiftsClose').focus();});
 $('shiftsClose').addEventListener('click',()=>{$('shiftsOverlay').hidden=true;$('shiftsOpen').focus();});
 $('shiftsOverlay').addEventListener('click',e=>{if(e.target===$('shiftsOverlay'))$('shiftsClose').click();});
 $('shiftTravelType').addEventListener('change',()=>{const enabled=$('shiftTravelType').value!=='none';$('shiftTravelTime').disabled=!enabled;$('shiftTravelTime').required=enabled;$('shiftTravelDuration').disabled=!enabled;$('shiftTravelDuration').required=enabled;if(!enabled){$('shiftTravelTime').value='';$('shiftTravelDuration').value='';}});
