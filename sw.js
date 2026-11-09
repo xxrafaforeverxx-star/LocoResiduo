@@ -1,4 +1,4 @@
-const CACHE='locoresiduo-offline-v41';
+const CACHE='locoresiduo-offline-v42';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg'];
 const OPTIONAL=['./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
@@ -36,7 +36,8 @@ self.addEventListener('fetch',event=>{
   }
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
-    const cached=await cache.match(request,{ignoreSearch:true});
+    const forceRefresh=url.searchParams.has('v')||url.searchParams.has('wrappedTest');
+    const cached=forceRefresh?null:await cache.match(request,{ignoreSearch:true});
     if(cached)return cached;
     try{
       const response=await fetch(request);
