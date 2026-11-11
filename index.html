@@ -429,6 +429,64 @@ main>header+.card .train{text-shadow:0 0 22px #f3343940}
 .driveDigits{font-variant-numeric:tabular-nums;text-shadow:0 2px 12px #000b}
 @media(max-width:380px){.cockpitDial{padding:8px}.cockpitResidue{gap:5px}.cockpitMetric{padding:9px 2px}.cockpitDialTitle,.cockpitDialSubtitle{letter-spacing:0}}
 @media(prefers-reduced-motion:reduce){.cockpitRailTrain,.cockpitRailFill{transition:none}}
+
+/* Cabina compacta: todos los controles principales visibles en móviles */
+@media(max-width:700px){
+ main{padding:calc(env(safe-area-inset-top) + 7px) 11px calc(env(safe-area-inset-bottom) + 8px)}
+ header{padding:2px 0 8px;margin-bottom:7px;gap:6px}
+ h1{font-size:clamp(21px,5.4vw,32px)}
+ header .logo img{max-width:43px;max-height:43px}
+ #gpsBadge{padding:5px 4px;min-width:70px;max-width:88px;font-size:10px}
+ main>header+.card{padding:6px 10px;margin-bottom:6px}
+ main>header+.card .train{font-size:clamp(39px,11vw,60px);line-height:1.04}
+ .row{gap:7px}
+ .row>.card{min-height:0!important;padding:7px 7px!important;margin-bottom:6px}
+ .row>.card .label{font-size:11px}
+ .row>.card .length,.row>.card .unit,.row>.card .metric{font-size:clamp(22px,5.6vw,30px)}
+ .cockpitResidue{margin:4px 0 0;gap:5px;grid-template-columns:minmax(0,1fr) minmax(0,1.42fr) minmax(0,1fr)}
+ .cockpitDial{width:min(100%,22dvh);justify-self:center;padding:8px;border-width:2px}
+ .cockpitDial strong{font-size:clamp(23px,6.5vw,39px)}
+ .cockpitDialIcon{font-size:16px}
+ .cockpitDialTitle,.cockpitDialSubtitle{font-size:10px}
+ .cockpitDial small{font-size:10px}
+ .cockpitMetric{padding:8px 2px}
+ .cockpitMetric .metric{font-size:clamp(17px,4.8vw,26px);margin-top:3px}
+ .cockpitMetric .label{font-size:10px}
+ .cockpitSymbol{font-size:18px;margin-bottom:3px}
+ .cockpitRail{height:27px;margin:0 5px}
+ .cockpitRailTrain{font-size:22px;bottom:6px}
+ .cockpitRailFlag{font-size:20px}
+ .cockpitStatus{font-size:10px;min-height:15px;margin:2px 0}
+ .section{font-size:12px;margin:6px 0 4px;gap:6px}
+ .hint{font-size:9px;margin-bottom:5px}
+ .grid{gap:5px}
+ .speed{height:clamp(35px,5.6dvh,45px);font-size:clamp(18px,5vw,24px);border-radius:7px}
+ .voice{font-size:11px;margin-top:4px;min-height:13px}
+ .actions{margin-top:5px;gap:6px}
+ .action{padding:9px 4px;font-size:13px;border-radius:9px}
+ #gpsResiduo{padding:10px 5px;font-size:14px}
+ .driveTimer{margin-top:8px!important;padding:7px 9px!important}
+ .driveDigits{font-size:clamp(27px,7vw,39px)!important;line-height:1.1}
+ .driveHead{font-size:10px}
+ .driveHead select{font-size:11px;padding:3px}
+ .driveControls button{padding:7px!important}
+ .driveInfo{font-size:10px}
+ .trainArt{display:none!important}
+ .safetyDetails{margin-top:4px}
+}
+@media(max-width:700px) and (max-height:760px){
+ header{padding-bottom:5px;margin-bottom:5px}
+ main>header+.card .train{font-size:38px}
+ .cockpitDial{width:min(100%,18dvh)}
+ .cockpitDialIcon{display:none}
+ .cockpitDialTitle,.cockpitDialSubtitle{font-size:9px}
+ .cockpitRail{height:20px}
+ .cockpitRailTrain{font-size:18px}
+ .speed{height:34px}
+ .section{margin:4px 0 2px}
+ .hint{display:none}
+ .driveTimer{margin-top:5px!important}
+}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="shiftsOpen" class="settingsOpen" aria-label="Abrir turnos" title="Mis turnos">▤</button><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
