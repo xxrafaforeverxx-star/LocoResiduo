@@ -391,11 +391,49 @@ main{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
  text-shadow:0 2px 5px #071525!important
 }
 #wrappedShakeScene .wrappedShakeActions button:active{background:rgba(255,255,255,.12)!important}
+
+/* Cabina ferroviaria moderna — solo presentación, sin alterar datos ni cálculos */
+:root{color-scheme:dark}
+body{background:radial-gradient(ellipse at 50% -15%,#172b37 0%,#080d12 45%,#030609 100%) fixed}
+main{max-width:620px;padding-inline:15px}
+header{border-bottom-color:#29404b;padding-bottom:16px}
+h1{font-style:normal;letter-spacing:-1.4px;text-shadow:0 1px 10px #0009}
+.card,.driveTimer{background:repeating-linear-gradient(132deg,#ffffff03 0 1px,transparent 1px 8px),linear-gradient(145deg,#152630,#081016 88%)!important;border:1.5px solid #456272!important;box-shadow:inset 0 1px 0 #ffffff13,0 5px 16px #0005!important;border-radius:17px!important}
+main>header+.card{border-color:#e52e39!important;background:linear-gradient(110deg,#111d26 0%,#0b121b 65%,#25131b 100%)!important;box-shadow:inset 3px 0 0 #fa3341,0 5px 22px #0008!important}
+main>header+.card .train{text-shadow:0 0 22px #f3343940}
+.label{color:#b8cbd7;letter-spacing:1px}
+.row>.card{min-height:92px}
+#gpsSpeed{color:#45f775}
+.cockpitResidue{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.72fr) minmax(0,1fr);align-items:center;gap:8px;margin:12px 0 0}
+.cockpitMetric{background:linear-gradient(140deg,#13212b,#070e14);border:1.5px solid #344e5e;border-radius:15px;padding:12px 4px;text-align:center;min-width:0}
+.cockpitMetric .label{font-size:clamp(9px,2.6vw,12px);letter-spacing:.4px}
+.cockpitMetric .metric{font-size:clamp(18px,5.2vw,30px);white-space:nowrap}
+.cockpitSymbol{font-size:24px;color:#a8c1d0;margin-bottom:6px}
+.cockpitAccuracy{color:#4bf279}
+.cockpitDial{--dial-progress:0%;aspect-ratio:1;border-radius:50%;padding:12px;background:conic-gradient(from 220deg,#23f651 0 var(--dial-progress),#344c5c var(--dial-progress) 78%,transparent 78% 100%);border:3px solid #385563;box-shadow:0 0 20px #00ff3720,inset 0 0 14px #000c;display:grid;place-items:center;min-width:0}
+.cockpitDialInner{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle,#0a1820,#02070b);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:5px}
+.cockpitDialIcon{font-size:clamp(15px,4vw,26px)}
+.cockpitDialTitle,.cockpitDialSubtitle{font-size:clamp(10px,2.9vw,15px);font-weight:900;color:#bdced8;letter-spacing:1px}
+.cockpitDial strong{font-size:clamp(27px,8vw,52px);line-height:1.12;white-space:nowrap;color:#fff;font-weight:1000;letter-spacing:-1px}
+.cockpitDial small{font-size:clamp(10px,2.8vw,14px);color:#a9c2d0;margin-top:3px}
+.cockpitRail{display:flex;align-items:end;gap:4px;margin:5px 6px 0;position:relative;height:39px}
+.cockpitRailTrack{height:12px;position:relative;flex:1;border-bottom:3px solid #718d9c;background:repeating-linear-gradient(90deg,transparent 0 12px,#78909a 12px 14px,transparent 14px 22px)}
+.cockpitRailFill{position:absolute;bottom:-3px;left:0;height:7px;max-width:100%;background:#32f25a;box-shadow:0 0 10px #16f74388;transition:width .25s linear}
+.cockpitRailTrain{position:absolute;left:0;bottom:8px;font-size:29px;z-index:1;transition:left .25s linear;filter:drop-shadow(0 0 6px #0cf45a66)}
+.cockpitRailFlag{font-size:24px;color:#dcebf3}
+.cockpitStatus{color:#a8c4d1;text-align:center;font-size:12px;min-height:27px;margin:8px 0 4px}
+#gpsResiduo{background:linear-gradient(100deg,#092015,#071810)!important;border:2px solid #2cf15b!important;color:#4afa75!important;box-shadow:0 0 12px #12f64733!important;font-size:clamp(14px,4vw,19px);padding:16px 8px}
+.action{background:linear-gradient(135deg,#203543,#101c26);border:1.5px solid #4b7186;font-size:clamp(13px,3.5vw,17px);padding:15px 5px}
+.action.danger{background:linear-gradient(135deg,#64252b,#2a1118);border-color:#f04450}
+.driveTimer{margin-top:24px}
+.driveDigits{font-variant-numeric:tabular-nums;text-shadow:0 2px 12px #000b}
+@media(max-width:380px){.cockpitDial{padding:8px}.cockpitResidue{gap:5px}.cockpitMetric{padding:9px 2px}.cockpitDialTitle,.cockpitDialSubtitle{letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.cockpitRailTrain,.cockpitRailFill{transition:none}}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="shiftsOpen" class="settingsOpen" aria-label="Abrir turnos" title="Mis turnos">▤</button><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
-<div class="row"><div class="card"><div class="label">RECORRIDO</div><div class="metric" id="travelled">0 m</div></div><div class="card"><div class="label">RESTANTE</div><div class="metric redtext" id="remaining">0 m</div></div></div>
-<div class="card"><div class="between"><span class="label">PRECISIÓN GPS</span><span class="good" id="accuracy">--</span></div><div class="track"><div class="fill" id="progress"></div></div><div class="status" id="gpsStatus">GPS pendiente · esperando permiso</div></div>
+<div class="cockpitResidue"><div class="cockpitMetric"><div class="cockpitSymbol" aria-hidden="true">╱╲</div><div class="label">RECORRIDO</div><div class="metric" id="travelled">0 m</div></div><div class="cockpitDial" role="img" aria-label="Progreso estimado del residuo"><div class="cockpitDialInner"><span class="cockpitDialIcon" aria-hidden="true">🚆</span><span class="cockpitDialTitle">RESIDUO</span><strong id="remaining">0 m</strong><span class="cockpitDialSubtitle">RESTANTES</span><small id="cockpitFraction">0 m / 0 m</small></div></div><div class="cockpitMetric"><div class="cockpitSymbol" aria-hidden="true">◎</div><div class="label">PRECISIÓN GPS</div><div class="metric cockpitAccuracy" id="accuracy">--</div></div></div>
+<div class="cockpitRail" aria-hidden="true"><span class="cockpitRailTrain">🚆</span><span class="cockpitRailTrack"><span class="cockpitRailFill" id="progress"></span></span><span class="cockpitRailFlag">⚑</span></div><div class="cockpitStatus" id="gpsStatus">GPS pendiente · esperando permiso</div>
 <div class="section">VELOCIDAD DE REFERENCIA</div><div class="hint">Velocidades: cálculo −3 km/h · RESIDUO GPS: medición</div><div class="grid" id="speeds"></div><div class="voice" id="voice"></div><div class="done" id="done" role="status" aria-live="polite"><div class="doneTop"><span class="doneIcon" aria-hidden="true">✓</span><span class="doneTitle">RESIDUO COMPLETADO</span></div><div class="doneAlarms" aria-label="Tres avisos sonoros"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></div><div class="completeInfo">Distancia calculada alcanzada · Verificar por medios reglamentarios.</div></div>
 <div class="actions"><button class="action" id="gpsResiduo"><span class="gpsButtonMark" aria-hidden="true">◎</span> RESIDUO GPS</button></div><div class="actions"><button class="action" id="pause" disabled>Pausar</button><button class="action danger" id="reset">Nuevo residuo</button></div>
 
@@ -415,7 +453,7 @@ const state={mode:'manual',speed:0,travelled:0,running:false,paused:false,comple
 const target=()=>{const raw=$('length').value.trim().replace(',','.');const n=Number(raw);return raw&&Number.isFinite(n)&&n>0&&n<=5000?n:0;};
 const hasValidTrain=()=>Boolean($('train').value.trim())&&target()>0;
 const fmt=n=>Math.max(0,Math.round(n)).toLocaleString('es-ES');
-function update(){const t=target();$('travelled').textContent=fmt(state.travelled)+' m';$('remaining').textContent=fmt(Math.max(0,t-state.travelled))+' m';$('progress').style.width=(t?Math.min(100,state.travelled/t*100):0)+'%';$('remaining').style.color=t&&state.travelled>=t?'#4ade80':'#ef4444';}
+function update(){const t=target(),pct=t?Math.min(100,state.travelled/t*100):0;$('travelled').textContent=fmt(state.travelled)+' m';$('remaining').textContent=fmt(Math.max(0,t-state.travelled))+' m';$('progress').style.width=pct+'%';$('remaining').style.color=t&&state.travelled>=t?'#4ade80':'#f5f8fa';$('cockpitFraction').textContent=fmt(state.travelled)+' m / '+fmt(t)+' m';document.querySelector('.cockpitDial').style.setProperty('--dial-progress',pct+'%');document.querySelector('.cockpitRailTrain').style.left='calc('+pct+'% - '+(pct/100*34)+'px)';}
 function speak(message){if(typeof appSettings!=='undefined'&&!appSettings.voice)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.lang='es-ES';speechSynthesis.speak(u);}catch(e){}}
 function makeAlarm(){const sampleRate=22050,duration=1.28,n=Math.floor(sampleRate*duration),samples=new Int16Array(n);for(let i=0;i<n;i++){const t=i/sampleRate,segment=Math.floor(t/.4),local=t-segment*.4;if(segment<3&&local<.23){const env=Math.min(1,local/.012,Math.max(0,(.23-local)/.025));samples[i]=Math.round(14000*env*Math.sin(2*Math.PI*880*t));}}const buffer=new ArrayBuffer(44+n*2),view=new DataView(buffer);const str=(off,v)=>{for(let i=0;i<v.length;i++)view.setUint8(off+i,v.charCodeAt(i));};str(0,'RIFF');view.setUint32(4,36+n*2,true);str(8,'WAVE');str(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);str(36,'data');view.setUint32(40,n*2,true);for(let i=0;i<n;i++)view.setInt16(44+i*2,samples[i],true);return URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));}
 const alarm=new Audio(makeAlarm());alarm.preload='auto';alarm.setAttribute('playsinline','');let alarmUnlocked=false;
