@@ -487,6 +487,47 @@ main>header+.card .train{text-shadow:0 0 22px #f3343940}
  .hint{display:none}
  .driveTimer{margin-top:5px!important}
 }
+
+/* Cabina compacta: cronómetro dentro del flujo, nunca superpuesto a controles */
+@media(max-width:700px){
+ main{padding-bottom:calc(env(safe-area-inset-bottom) + 12px)!important}
+ #driveTimer.driveTimer{position:relative!important;left:auto!important;bottom:auto!important;right:auto!important;top:auto!important;transform:none!important;width:100%!important;max-width:none!important;z-index:auto!important;margin:7px 0 0!important;box-shadow:inset 0 1px 0 #ffffff13,0 4px 12px #0005!important}
+ .cockpitDial{width:min(100%,19dvh)!important}
+ .cockpitResidue{margin-top:2px}
+ .cockpitRail{height:22px}
+ .cockpitStatus{margin:1px 0}
+ .section{margin:4px 0 3px}
+ .hint{margin-bottom:3px}
+ .voice{margin-top:2px}
+ .actions{margin-top:4px}
+ #gpsResiduo{padding:8px 4px}
+ .action{padding:8px 4px}
+ .safetyDetails{font-size:10px}
+}
+@media(max-width:700px) and (max-height:850px){
+ header{margin-bottom:5px}
+ main>header+.card{padding:4px 8px;margin-bottom:4px}
+ main>header+.card .train{font-size:clamp(34px,9vw,49px)}
+ .row>.card{padding:5px 6px!important;margin-bottom:4px}
+ .cockpitDial{width:min(100%,16.5dvh)!important}
+ .cockpitDialIcon{display:none}
+ .cockpitMetric{padding:5px 2px}
+ .cockpitSymbol{font-size:15px;margin-bottom:1px}
+ .cockpitRail{height:19px}
+ .speed{height:clamp(30px,4.8dvh,39px)}
+ .grid{gap:4px}
+ #driveTimer.driveTimer{padding:5px 8px!important}
+ .driveDigits{font-size:29px!important}
+ .driveControls button{padding:5px!important}
+}
+@media(max-width:700px) and (max-height:690px){
+ .cockpitDial{width:min(100%,14dvh)!important}
+ .cockpitDial small,.cockpitSymbol,.hint{display:none}
+ .cockpitDial strong{font-size:23px}
+ .cockpitRail{height:16px}
+ .speed{height:29px}
+ .section{font-size:11px}
+}
 </style></head><body><main><header><div class="logo" aria-hidden="true"><img src="./icon.svg" alt=""></div><h1>Loco<span>Residuo</span></h1><button type="button" id="shiftsOpen" class="settingsOpen" aria-label="Abrir turnos" title="Mis turnos">▤</button><button type="button" id="settingsOpen" class="settingsOpen" aria-label="Abrir ajustes" title="Ajustes">⚙</button><div id="gpsBadge" class="gps-wait"><span id="gpsBadgeText">◈ GPS PENDIENTE</span><span class="gpsQuality" id="gpsQuality">SIN MEDICIÓN</span></div></header>
 <div class="card"><div class="label">NÚMERO DE TREN</div><input id="train" class="train" inputmode="numeric" placeholder="Introduce el tren" autocomplete="off"></div>
 <div class="row"><div class="card"><div class="label">LONGITUD TREN</div><input id="length" class="length" inputmode="decimal" placeholder="450"><span class="unit">m</span></div><div class="card"><div class="label">VELOCIDAD GPS</div><div class="metric" id="gpsSpeed">--</div></div></div>
