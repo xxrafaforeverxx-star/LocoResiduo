@@ -428,11 +428,40 @@ function confirmStart(){if(!appSettings.sounds)return;try{startSound.pause();sta
 function finish(){if(state.complete)return;clearResidue();state.complete=true;state.running=false;stopGPS();$('done').style.display='block';$('voice').textContent='Distancia calculada alcanzada';tone();if(appSettings.vibration&&navigator.vibrate)navigator.vibrate([200,120,200,120,200]);$('pause').disabled=true;}
 function addDistance(m){if(!state.running||state.paused||state.complete||!Number.isFinite(m)||m<=0||target()<=0)return;state.travelled=Math.min(target(),state.travelled+Math.max(0,m));update();if(target()>0&&state.travelled>=target())finish();}
 function meters(a,b){const R=6371000,toRad=v=>v*Math.PI/180,dlat=toRad(b.latitude-a.latitude),dlon=toRad(b.longitude-a.longitude),x=Math.sin(dlat/2)**2+Math.cos(toRad(a.latitude))*Math.cos(toRad(b.latitude))*Math.sin(dlon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
-function stopGPS(){if(state.watch!==null&&navigator.geolocation){navigator.geolocation.clearWatch(state.watch);state.watch=null;}state.lastGPS=null;gpsLastFixAt=0;}
+function stopGPS(){if(state.watch!==null&&navigator.geolocation){navigator.geolocation.clearWatch(state.watch);state.watch=null;}state.lastGPS=null;gpsLastFixAt=0;gpsSpeedMps=null;gpsSpeedAt=0;}
 let gpsLastFixAt=0;
 function gpsQuality(level,accuracy){const badge=$('gpsBadge');badge.classList.remove('gps-excellent','gps-fair','gps-poor','gps-wait');badge.classList.add('gps-'+level);const names={excellent:'BUENA',fair:'REGULAR',poor:'MALA',wait:'ESPERANDO'};$('gpsBadgeText').textContent='◈ GPS '+names[level];$('gpsQuality').textContent=Number.isFinite(accuracy)?'± '+Math.round(accuracy)+' m':level==='wait'?'SIN MEDICIÓN':'SIN SEÑAL';}
-setInterval(()=>{if(state.running&&state.watch!=null&&gpsLastFixAt&&Date.now()-gpsLastFixAt>7000){gpsQuality('wait');$('gpsStatus').textContent='Señal GPS desactualizada · esperando nueva posición';$('gpsSpeed').textContent='--';$('accuracy').textContent='--';state.lastGPS=null;gpsLastFixAt=0;}},1000);
-function startGPS(){stopGPS();gpsLastFixAt=0;gpsQuality('wait');if(!('geolocation'in navigator)){$('gpsStatus').textContent='GPS no disponible · medición detenida';return;}$('gpsStatus').textContent='Buscando señal GPS…';state.watch=navigator.geolocation.watchPosition(p=>{const now=performance.now(),c=p.coords,acc=c.accuracy,good=Number.isFinite(acc)&&acc<=12&&Number.isFinite(c.latitude)&&Number.isFinite(c.longitude);if(!Number.isFinite(p.timestamp)||Date.now()-p.timestamp>7000||p.timestamp>Date.now()+1000){state.lastGPS=null;gpsQuality('wait');$('gpsStatus').textContent='Posición GPS antigua o inválida · sin sumar';return;}gpsLastFixAt=Date.now();gpsQuality(!Number.isFinite(acc)||acc>12?'poor':acc<=6?'excellent':'fair',acc);state.lastPositionAt=now;$('gpsSpeed').textContent=c.speed!=null&&c.speed>=0?Math.round(c.speed*3.6)+' km/h':'--';$('accuracy').textContent=Number.isFinite(acc)?'± '+Math.round(acc)+' m':'--';if(!good){state.lastGPS=null;$('gpsStatus').textContent='Precisión insuficiente (más de ±12 m) · esperando';return;}if(state.mode!=='gps'||!state.running||state.paused){state.lastGPS={coords:c,timestamp:p.timestamp};$('gpsStatus').textContent='GPS disponible · modo estimado';return;}if(!state.lastGPS){state.lastGPS={coords:c,timestamp:p.timestamp};$('gpsStatus').textContent='Señal adquirida · esperando siguiente posición';return;}const dt=(p.timestamp-state.lastGPS.timestamp)/1000,old=state.lastGPS.coords;if(dt<=0)return;if(dt>4){state.lastGPS={coords:c,timestamp:p.timestamp};$('gpsStatus').textContent='Interrupción GPS · nueva referencia, sin sumar';return;}const d=meters(old,c),uncertainty=Math.hypot(acc,old.accuracy),threshold=Math.max(4,uncertainty*.85),maxJump=Math.max(8,dt*55+uncertainty);if(d>maxJump){state.lastGPS={coords:c,timestamp:p.timestamp};$('gpsStatus').textContent='Salto GPS descartado · sin sumar';return;}if(c.speed!=null&&c.speed>=0&&c.speed<.8&&d<threshold*1.5){state.lastGPS={coords:c,timestamp:p.timestamp};$('gpsStatus').textContent='Parado o movimiento no distinguible del error GPS';return;}if(d<threshold){$('gpsStatus').textContent='Movimiento menor que incertidumbre GPS · esperando';return;}state.lastGPS={coords:c,timestamp:p.timestamp};$('gpsStatus').textContent='GPS filtrado · distancia aproximada';addDistance(d);},err=>{state.lastGPS=null;gpsLastFixAt=0;gpsQuality('poor');$('gpsSpeed').textContent='--';$('gpsStatus').textContent=err.code===1?'Permiso de ubicación denegado':'GPS no disponible · no se suman metros';},{enableHighAccuracy:true,maximumAge:0,timeout:12000});}
+setInterval(()=>{if(state.running&&state.watch!=null&&gpsLastFixAt&&Date.now()-gpsLastFixAt>7000){gpsSpeedMps=null;gpsSpeedAt=0;gpsQuality('wait');$('gpsStatus').textContent='Señal GPS desactualizada · esperando nueva posición';$('gpsSpeed').textContent='--';$('accuracy').textContent='--';state.lastGPS=null;gpsLastFixAt=0;}},1000);
+let gpsSpeedMps=null,gpsSpeedAt=0;
+function startGPS(){
+ stopGPS();gpsLastFixAt=0;gpsQuality('wait');
+ if(!('geolocation'in navigator)){$('gpsStatus').textContent='GPS no disponible · medición detenida';return;}
+ $('gpsStatus').textContent='Buscando velocidad GPS…';
+ state.watch=navigator.geolocation.watchPosition(p=>{
+  const c=p.coords,acc=c.accuracy,now=Date.now();
+  if(!Number.isFinite(p.timestamp)||now-p.timestamp>3000||p.timestamp>now+1000){
+   gpsSpeedMps=null;gpsSpeedAt=0;state.lastGPS=null;gpsQuality('wait');
+   $('gpsSpeed').textContent='--';$('gpsStatus').textContent='Dato GPS antiguo · cálculo detenido';return;
+  }
+  gpsLastFixAt=now;
+  const positionGood=Number.isFinite(acc)&&acc<=25&&Number.isFinite(c.latitude)&&Number.isFinite(c.longitude);
+  const speedGood=Number.isFinite(c.speed)&&c.speed>=0&&c.speed<=90;
+  gpsQuality(!positionGood?'poor':acc<=6?'excellent':'fair',acc);
+  $('gpsSpeed').textContent=speedGood?Math.round(c.speed*3.6)+' km/h':'--';
+  $('accuracy').textContent=Number.isFinite(acc)?'± '+Math.round(acc)+' m':'--';
+  if(!positionGood||!speedGood){
+   gpsSpeedMps=null;gpsSpeedAt=0;
+   $('gpsStatus').textContent=!positionGood?'Precisión GPS insuficiente · cálculo detenido':'Velocidad GPS no disponible · cálculo detenido';
+   return;
+  }
+  gpsSpeedMps=c.speed;gpsSpeedAt=now;
+  $('gpsStatus').textContent=state.mode==='gps'?'Velocidad GPS · distancia estimada':'GPS disponible · modo estimado';
+ },err=>{
+  gpsSpeedMps=null;gpsSpeedAt=0;state.lastGPS=null;gpsLastFixAt=0;
+  gpsQuality('poor');$('gpsSpeed').textContent='--';$('accuracy').textContent='--';
+  $('gpsStatus').textContent=err.code===1?'Permiso de ubicación denegado':'GPS no disponible · cálculo detenido';
+ },{enableHighAccuracy:true,maximumAge:0,timeout:12000});
+}
 let locoAlertAction=null;
 function closeLocoAlert(confirmed=false){$('locoAlertOverlay').hidden=true;const action=locoAlertAction;locoAlertAction=null;if(confirmed&&typeof action==='function')action();}
 function locoAlert(message,onConfirm=null){locoAlertAction=onConfirm;$('locoAlertMessage').textContent=message;$('locoAlertOk').textContent=onConfirm?'Aceptar':'Aceptar';$('locoAlertOverlay').hidden=false;$('locoAlertOk').focus();}
@@ -444,7 +473,7 @@ for(let v=10;v<=100;v+=10){const b=document.createElement('button');b.className=
 $('pause').addEventListener('click',()=>{if(!state.running)return;state.paused=!state.paused;state.lastTick=performance.now();state.lastGPS=null;$('pause').textContent=state.paused?'Reanudar':'Pausar';if(state.paused)stopGPS();else startGPS();});
 $('reset').addEventListener('click',()=>{clearResidue();stopGPS();state.running=false;state.paused=false;state.complete=false;state.travelled=0;state.speed=0;state.mode='manual';state.lastPositionAt=0;$('gpsResiduo').classList.remove('active');$('done').style.display='none';$('voice').textContent='';$('pause').disabled=true;$('pause').textContent='Pausar';gpsLastFixAt=0;gpsQuality('wait');$('gpsStatus').textContent='GPS pendiente';$('gpsSpeed').textContent='--';$('accuracy').textContent='--';document.querySelectorAll('.speed').forEach(b=>b.classList.remove('active'));update();});
 $('length').addEventListener('input',()=>{if(state.running){$('length').blur();return;}update();});
-setInterval(()=>{const now=performance.now(),dt=Math.max(0,Math.min(1,(now-state.lastTick)/1000));state.lastTick=now;if(!state.running||state.paused||document.hidden)return;if(state.mode==='manual'){$('gpsStatus').textContent='Modo estimado · velocidad seleccionada −'+appSettings.speedMargin+' km/h';addDistance(Math.max(0,state.speed-appSettings.speedMargin)/3.6*dt);}},250);
+setInterval(()=>{const now=performance.now(),dt=Math.max(0,Math.min(1,(now-state.lastTick)/1000));state.lastTick=now;if(!state.running||state.paused||document.hidden)return;if(state.mode==='manual'){$('gpsStatus').textContent='Modo estimado · velocidad seleccionada −'+appSettings.speedMargin+' km/h';addDistance(Math.max(0,state.speed-appSettings.speedMargin)/3.6*dt);}else if(state.mode==='gps'){if(gpsSpeedMps!==null&&Date.now()-gpsSpeedAt<=2000){addDistance(gpsSpeedMps*dt);}else{$('gpsStatus').textContent='Esperando velocidad GPS reciente · cálculo detenido';}}},250);
 document.addEventListener('visibilitychange',()=>{state.lastTick=performance.now();if(document.hidden&&state.running&&!state.paused){state.paused=true;stopGPS();$('pause').textContent='Reanudar';$('voice').textContent='Pausado al salir de la aplicación';}});
 
 // Cronómetro de conducción independiente del contador de distancia.
